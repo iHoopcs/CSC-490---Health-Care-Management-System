@@ -1,4 +1,5 @@
 const express = require('express'); 
+const bcrypt = require('bcrypt'); //library to hash passwords
 const router = express.Router(); 
 const User = require('../models/user.js'); 
 
@@ -11,7 +12,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-router.post('/register-user', (req, res) => {
+router.post('/signup', async (req, res) => {
     const { 
         firstName, 
         lastName,
@@ -23,36 +24,43 @@ router.post('/register-user', (req, res) => {
         email
     } = req.body; 
 
-    //check if user with email already exists
-    User.find({
-        email: email
-    }).then((foundUser) => {
-        if (!foundUser.length == 1){ //if no users found - create new
-            const newUser = User({
-                firstName: firstName, 
-                lastName: lastName,
-                height: height, 
-                weight: weight, 
-                age: age, 
-                username: username, 
-                password: password, 
-                email: email,
-            }); 
-        
-            /*
-            newUser.save()
-                .then((response) => {
-                    response.send('*user created*')
-                })
-                .catch(err => console.log(err))
-            */
-            res.status(201).send('*user created*')
-            
-        }else {
-            res.status(400).send('Email already registered to an account')
+    try {
+        const existingUser = await User.findOne({
+            email: email
+        })
+
+        if (existingUser){
+            //user already exists
+            return res.status(400).send('User already exists')
         }
+        //hash password
+        const hashedPassword = await bcrypt.hash(password, 10); //hash 'password' with 10 'salt rounds'
         
-    })
+        //create new User
+        const newUser = User ({
+            firstName: firstName, 
+            lastName: lastName, 
+            height: height, 
+            weight: weight, 
+            age: age, 
+            username: username, 
+            password: hashedPassword, 
+            email: email
+        })
+
+        //save user database
+        newUser.save()
+        res.status(201).json({
+            message: '*User Created*',
+            user: newUser
+        })
+    }catch (err){
+        res.status(400).send(err); 
+    }
+})
+
+router.post('/login', (req, res) => {
+
 })
 
 module.exports = router; 
