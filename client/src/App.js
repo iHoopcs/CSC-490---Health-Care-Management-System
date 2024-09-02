@@ -1,10 +1,18 @@
 import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home.js';
+import TestPage from './pages/TestPage.js';
 
 function App() {
   return (
-    <div>
-      <h1 className="text-center">Welcome to the Health Care Management Web App!</h1>
-    </div>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/testpage" element={<TestPage />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 
