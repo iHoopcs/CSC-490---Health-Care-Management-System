@@ -1,6 +1,10 @@
 import React from 'react'
 import './Popup.css'
 
+/** 
+  * Displays a popup using css styling, appears as a window to 
+  * the user and fades the current pages background while active
+*/
 function Popup(props) {
   return (props.trigger) ? (
     <div className="popup">

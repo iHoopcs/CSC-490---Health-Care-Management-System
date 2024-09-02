@@ -1,6 +1,10 @@
 import Popup from "../components/Popup"
 import { useState } from 'react';
 
+/**
+ * This page is used to test out new features before putting them
+ * on primary pages
+ */
 function TestPage() {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showSignupPopup, setShowSignupPopup] = useState(false);
@@ -64,16 +68,23 @@ function TestPage() {
   );
 
   /**
-    * This function attemps submitting the user's credentials when
-    * they are ready to log in and should authenticate those credentials
-    * before giving the user access
-    */
+    * submits the user's credentials, authenticates them, and 
+    * logs the user in
+  */
   function submitLoginCredentials() {
+    //TODO: Authenticate the user's credentials
+
     console.log("username: " + username);
     console.log("password: " + password);
   }
 
+  /** 
+    * submits user's registration information and validates the information 
+    * before creating a new user
+  */
   function submitSignupInformation() {
+    //TODO: Validate the user's information as valid 
+
     console.log("username: " + newUsername);
     console.log("password: " + newPassword);
     console.log("email: " + email);
@@ -82,6 +93,8 @@ function TestPage() {
     console.log("age: " + age);
     console.log("height: " + height);
     console.log("weight: " + weight);
+
+    //TODO: Create a new user
   }
 }
 
