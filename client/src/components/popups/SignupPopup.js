@@ -1,6 +1,7 @@
 import Popup from "./Popup"
 import { useState } from 'react';
 import './SignupPopup.css';
+import axios from 'axios';
 
 /**
  * Returns a component that display the sign up pop up, includes interaction
@@ -13,9 +14,9 @@ function SignupPopup() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [age, setAge] = useState();
-  const [height, setHeight] = useState();
-  const [weight, setWeight] = useState();
+  const [age, setAge] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
 
   const [submissionAttempted, setSubmissionAttempted] = useState(false);
   const [submissionErrors, setSubmissionErrors] = useState([]);
@@ -145,7 +146,7 @@ function SignupPopup() {
     * submits user's registration information and validates the information
     * before creating a new user
   */
-  function submitSignupInformation() {
+  async function submitSignupInformation() {
     setSubmissionAttempted(true);
 
     //Validate the user's information as valid
@@ -159,15 +160,31 @@ function SignupPopup() {
       return;
     }
 
-    console.log("password: " + password);
-    console.log("email: " + email);
-    console.log("first name: " + firstName);
-    console.log("last name: " + lastName);
-    console.log("age: " + age);
-    console.log("height: " + height + " cm");
-    console.log("weight: " + weight);
+    const newUser = {
+      firstName: firstName,
+      lastName: lastName,
+      height: height,
+      weight: weight,
+      age: age,
+      password: password,
+      email: email
+    };
 
-    //TODO: Create a new user
+    try {
+      const response = await axios.post('http://localhost:8080/api/signup', newUser);
+      console.log(response);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        setSubmissionErrors(['account with this email already exists']);
+      }
+      else {
+        setSubmissionErrors(['failed sending info']);
+      }
+      console.log(error);
+      return;
+    }
+
+    setShowSignupPopup(false);
   }
 }
 
