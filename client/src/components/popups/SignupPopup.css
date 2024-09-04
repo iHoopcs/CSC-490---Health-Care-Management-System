@@ -14,3 +14,11 @@
   flex-direction: row;
   gap: 16px;
 }
+
+.invalid-input {
+  border: 1px solid red;
+}
+
+.warning {
+  color: red;
+}
