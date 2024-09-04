@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import SignupPopupButton from '../components/SignupPopupButton';
 
 /**
   * The primary page of the application allowing the user to navigate
@@ -8,9 +8,7 @@ function Home() {
   return (
     <div>
       <h1 className="text-center">Welcome to the Health Care Management Web App!</h1>
-      <Link to="/testpage">
-        <button>Go to Test Page</button>
-      </Link>
+      <SignupPopupButton />
     </div>
   );
 }
