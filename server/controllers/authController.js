@@ -1,12 +1,10 @@
 require('dotenv').config(); //give access to .env file variables
-const express = require('express'); 
 const bcrypt = require('bcrypt'); //library to hash passwords
 const jwt = require('jsonwebtoken') //used for authorization - afte user authentication
-const { check, validationResult } = require('express-validator'); //library for server-side data validation
-const router = express.Router(); 
 const User = require('../models/user.js'); 
+const { validationResult } = require('express-validator'); //library for server-side data validation
 
-router.post('/signup', async (req, res) => {
+const signup = async (req, res) => {
     const { 
         firstName, 
         lastName,
@@ -49,9 +47,9 @@ router.post('/signup', async (req, res) => {
     }catch (err){
         res.status(400).send(err); 
     }
-})
+}
 
-router.post('/login', [check('email').isEmail().notEmpty().withMessage('Error: Check inputted email'), check('password').isLength({min: 5, max: 20}).withMessage('Password length: min: 5 characters & max: 15 characters')], (req, res) => {
+const login = async (req, res) => {
     const { email, password } = req.body; 
     const errors = validationResult(req); //holds errors for user input validation
 
@@ -91,6 +89,9 @@ router.post('/login', [check('email').isEmail().notEmpty().withMessage('Error: C
                 }
             })
     }
-})
+}
 
-module.exports = router; 
+module.exports = {
+    login, 
+    signup
+}
