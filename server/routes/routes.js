@@ -43,7 +43,7 @@ router.post('/signup', async (req, res) => {
         //save user database
         newUser.save()
         res.status(201).json({
-            message: '*User Created*',
+            msg: '*User Created*',
             user: newUser
         })
     }catch (err){
@@ -79,7 +79,7 @@ router.post('/login', [check('email').isEmail().notEmpty().withMessage('Error: C
                         {expiresIn: '1h'}
                         )   
 
-                        return res.status(200).json({
+                        return res.status(201).json({
                             msg: 'Welcome '+ foundUser.firstName + '!', 
                             token: token
                         })
