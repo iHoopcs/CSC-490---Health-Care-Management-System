@@ -1,10 +1,19 @@
-const express = require('express'); 
-const app = express(); 
-const port = 8080; 
+require('dotenv').config(); //allows access to environment variables
+const mongoose = require('mongoose'); 
+const app = require('./app.js'); 
+const port = process.env.PORT | 8080; 
 
-app.listen(port, () => {
-    console.log('Port listening on PORT 8080...')
-})
-app.get('/', (req, res) => {
-    res.send('Welcome to the Health Care Management System Server!')
-})
+//MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => [
+        console.log('MongoDB Connected'),
+        //start server
+        app.listen(port, () => {
+            console.log('Port listening on PORT 8080...')
+        })
+ 
+    ])
+    .catch((err) => {
+        console.log(err, 'Connection failed')
+    });
+
