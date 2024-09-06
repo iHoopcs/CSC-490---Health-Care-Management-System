@@ -2,6 +2,9 @@ import Popup from "./Popup"
 import { useState } from 'react';
 import './SignupPopup.css';
 import axios from 'axios';
+import { Icon } from 'react-icons-kit';
+import { eyeOff } from 'react-icons-kit/feather/eyeOff';
+import { eye } from 'react-icons-kit/feather/eye'
 
 /**
  * Returns a component that display the sign up pop up, includes interaction
@@ -11,6 +14,9 @@ function SignupPopup() {
   const [showSignupPopup, setShowSignupPopup] = useState(false);
 
   const [password, setPassword] = useState('');
+  const [passType, setPassType] = useState('password');
+  const [icon, setIcon] = useState(eyeOff);
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -20,6 +26,7 @@ function SignupPopup() {
 
   const [submissionAttempted, setSubmissionAttempted] = useState(false);
   const [submissionErrors, setSubmissionErrors] = useState([]);
+
 
   return (
     <div>
@@ -32,10 +39,16 @@ function SignupPopup() {
               ? 'invalid-input' : ''}
             onChange={e => setEmail(e.target.value)} />
           <span>Password: </span>
-          <input type="password" value={password}
-            className={submissionAttempted && !validatePassword(password)
-              ? 'invalid-input' : ''}
-            onChange={e => setPassword(e.target.value)} />
+          <div className='password-input'>
+            <input type={passType} value={password}
+              className={submissionAttempted && !validatePassword(password)
+                ? 'invalid-input' : ''}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <span className="icon-span" onClick={togglePasswordVisable}>
+              <Icon className="icon-input" icon={icon} size={25} />
+            </span>
+          </div>
           <span>First Name: </span>
           <input type="text" value={firstName}
             className={submissionAttempted && !validateName(firstName)
@@ -79,6 +92,15 @@ function SignupPopup() {
     </div>
   );
 
+  function togglePasswordVisable() {
+    if (passType === 'password') {
+      setIcon(eye);
+      setPassType('text')
+    } else {
+      setIcon(eyeOff)
+      setPassType('password')
+    }
+  }
 
   function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
