@@ -1,4 +1,5 @@
-import SignupPopupButton from '../components/popups/SignupPopup';
+import SignupPopupButton from '../../components/signupPopupForm/SignupPopup'; 
+import LoginPopupButton from '../../components/loginPopupForm/LoginPopup'; 
 import './Home.css';
 
 /**
@@ -11,6 +12,7 @@ function Home() {
       <h1 className="text-center">Welcome to the Health Care Management Web App!</h1>
       <div className='registration'>
         <SignupPopupButton />
+        <LoginPopupButton />
       </div>
     </div>
   );

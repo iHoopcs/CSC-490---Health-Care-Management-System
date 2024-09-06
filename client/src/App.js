@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home.js';
+import Home from './pages/Home/Home.js';
 
 /** 
   * Entry point of the application used to manage the pages of the 

@@ -1,4 +1,4 @@
-import Popup from "./Popup"
+import Popup from "../popups/Popup"
 import { useState } from 'react';
 import './SignupPopup.css';
 import axios from 'axios';
@@ -30,7 +30,7 @@ function SignupPopup() {
 
   return (
     <div>
-      <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1">User Signup</button>
+      <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1" className="btn btn-outline-secondary">Signup</button>
       <Popup trigger={showSignupPopup} setTrigger={setShowSignupPopup}>
         <div className="input-fields">
           <span>Email: </span>
