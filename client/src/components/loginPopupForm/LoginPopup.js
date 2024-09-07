@@ -30,6 +30,9 @@ function LoginPopup() {
             const response = await axios.post('http://localhost:8080/api/login', loginData);
             console.log('Login successful:', response.data);
             //redirect to platform page - with user welcome greeting
+            localStorage.setItem('token', response.data.token)
+            localStorage.setItem('msg', response.data.msg)
+            window.location.href = '/dashboard'
           } catch (error) {
             console.error('Login failed:', error);
             if (error.response && error.response.status === 401) {
@@ -71,7 +74,7 @@ function LoginPopup() {
                             required
                         />
                     </div>
-                    <button type="submit" className="button">Login</button>
+                    <button type="submit" className="btn btn-outline-primary">Login</button>
                 </form>
                 {
                         submissionErrors.length > 0 

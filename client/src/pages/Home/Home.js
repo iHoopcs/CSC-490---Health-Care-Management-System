@@ -9,11 +9,16 @@ import './Home.css';
 function Home() {
   return (
     <div>
-      <h1 className="text-center">Welcome to the Health Care Management Web App!</h1>
       <div className='registration'>
-        <SignupPopupButton />
-        <LoginPopupButton />
+          <div className='row'>
+            <SignupPopupButton />
+          </div>
+
+          <div className='row'>
+            <LoginPopupButton />
+          </div>
       </div>
+      
     </div>
   );
 }

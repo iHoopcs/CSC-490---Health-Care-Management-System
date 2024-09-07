@@ -1,6 +1,6 @@
-import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home.js';
+import { Dashboard } from './pages/Dashboard/Dashboard.js';
 
 /** 
   * Entry point of the application used to manage the pages of the 
@@ -12,6 +12,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path='/dashboard' element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </>
