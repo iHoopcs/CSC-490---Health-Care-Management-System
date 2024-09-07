@@ -8,6 +8,8 @@ import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import axios from 'axios'; 
+
 export const SideBar = (props) => {
 
     const [signoutModalVisible, setSignoutModalVisible] = useState(false); 
@@ -17,6 +19,14 @@ export const SideBar = (props) => {
     }
 
     const handleYesSignout = () => {
+        localStorage.clear(); 
+        window.location.href = '/'
+    }
+
+    //use jwt to validate user request to profile data --> GET request to /api/profile
+    const handleViewProfile =() => {
+        const token = localStorage.getItem('token'); //fetch user jwt for validation
+        
 
     }
   return (
@@ -61,13 +71,14 @@ export const SideBar = (props) => {
                                     <span className="ms-2">Profile</span>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item href="/profile"><button className='btn btn-outline-primary'>View Profile</button></Dropdown.Item>
+                                    <Dropdown.Item href="/profile"><button className='btn btn-outline-primary' onClick={() => {}}>View Profile</button></Dropdown.Item>
                                     <Dropdown.Item as="button"><button className='btn btn-outline-danger' onClick={() => {setSignoutModalVisible(true)}}>Logout</button></Dropdown.Item>
                                 </Dropdown.Menu>
                                 </Dropdown>
                             </li>
                         </ul>
 
+                        {/*Profile Signout Popup Modal*/}
                         <Modal {...props} size="md" aria-labelledby="contained-modal-title-vcenter" centered show={signoutModalVisible}>
                             <Modal.Header>
                                 <Modal.Title id="contained-modal-title-vcenter" className='w-100 text-center'>

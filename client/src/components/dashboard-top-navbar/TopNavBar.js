@@ -6,7 +6,7 @@ export const TopNavBar = () => {
         <>
             <Navbar bg="dark" variant="dark" sticky="top" className=" py-4 navbar-header"> 
                 <Container >
-                    <Navbar.Brand>NutriFitHealth</Navbar.Brand>
+                    <Navbar.Brand href='/dashboard'>NutriFitHealth</Navbar.Brand>
 
                     <Nav>
                         <Nav.Link>Learn Fitness & Nutrition</Nav.Link>
