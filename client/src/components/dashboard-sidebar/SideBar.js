@@ -36,6 +36,12 @@ export const SideBar = (props) => {
         })
             .then((response) => {
                 console.log(response)
+                if (response.status === 200) {
+                    sessionStorage.setItem('userProfileData', JSON.stringify(response.data.user))
+                    window.location.href = '/profile'
+                }else {
+                    console.log('An error occured')
+                }
             })
             .catch(err => console.log(err))
 
@@ -67,7 +73,7 @@ export const SideBar = (props) => {
 
                         <li className="nav-item fs-3">
                             <button className='btn btn-outline-secondary'>
-                                <a href="/nutrition" className="nav-link text-dark" aria-current="page">
+                                <a href="/calendar" className="nav-link text-dark" aria-current="page">
                                     <IoCalendarSharp />
                                     <span className='ms-2'>Calendar</span>
                                 </a>
