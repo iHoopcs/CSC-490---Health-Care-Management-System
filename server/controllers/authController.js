@@ -1,7 +1,7 @@
 require('dotenv').config(); //give access to .env file variables
 const bcrypt = require('bcrypt'); //library to hash passwords
 const jwt = require('jsonwebtoken') //used for authorization - afte user authentication
-const User = require('../models/user.js'); 
+const User = require('../Models/user.js'); 
 const { validationResult } = require('express-validator'); //library for server-side data validation
 
 const signup = async (req, res) => {
@@ -79,7 +79,8 @@ const login = async (req, res) => {
 
                         return res.status(201).json({
                             msg: 'Welcome '+ foundUser.firstName + '!', 
-                            token: token
+                            token: token,
+                            userEmail: foundUser.email
                         })
                     }else {
                         return res.status(400).send('Error: incorrect password')   

@@ -27,11 +27,12 @@ function LoginPopup() {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/login', loginData);
+            const response = await axios.post('http://localhost:8080/api/auth/login', loginData);
             console.log('Login successful:', response.data);
             //redirect to platform page - with user welcome greeting
             localStorage.setItem('token', response.data.token)
             localStorage.setItem('msg', response.data.msg)
+            localStorage.setItem('userEmail', response.data.userEmail)
             window.location.href = '/dashboard'
           } catch (error) {
             console.error('Login failed:', error);

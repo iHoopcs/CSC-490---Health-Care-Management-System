@@ -25,8 +25,19 @@ export const SideBar = (props) => {
 
     //use jwt to validate user request to profile data --> GET request to /api/profile
     const handleViewProfile =() => {
+        console.log('Request sent')
         const token = localStorage.getItem('token'); //fetch user jwt for validation
-        
+        const userEmail = localStorage.getItem('userEmail'); 
+        axios.get('http://localhost:8080/api/userData', {
+            headers: {
+                'Authorization': `Bearer ${token} ${userEmail}`,
+                'Accept': 'application/json'
+            }
+        })
+            .then((response) => {
+                console.log(response)
+            })
+            .catch(err => console.log(err))
 
     }
   return (
@@ -71,7 +82,7 @@ export const SideBar = (props) => {
                                     <span className="ms-2">Profile</span>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item href="/profile"><button className='btn btn-outline-primary' onClick={() => {}}>View Profile</button></Dropdown.Item>
+                                    <Dropdown.Item><button className='btn btn-outline-primary' onClick={() => {handleViewProfile()}}>View Profile</button></Dropdown.Item>
                                     <Dropdown.Item as="button"><button className='btn btn-outline-danger' onClick={() => {setSignoutModalVisible(true)}}>Logout</button></Dropdown.Item>
                                 </Dropdown.Menu>
                                 </Dropdown>

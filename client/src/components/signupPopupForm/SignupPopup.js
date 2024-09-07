@@ -193,7 +193,7 @@ function SignupPopup() {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/signup', newUser);
+      const response = await axios.post('http://localhost:8080/api/auth/signup', newUser);
       console.log(response);
     } catch (error) {
       if (error.response && error.response.status === 400) {
