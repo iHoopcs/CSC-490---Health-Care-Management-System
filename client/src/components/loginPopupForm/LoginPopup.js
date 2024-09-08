@@ -49,7 +49,7 @@ function LoginPopup() {
 
         // Login box
         <div>
-            <button onClick={() => setShowSignupPopup(true)} data-testid="Login" className="btn btn-outline-secondary">Login</button>
+            <button onClick={() => setShowSignupPopup(true)} data-testid="Login" className="btn btn-outline-secondary text-white">Login</button>
 
             <Popup trigger={showSignupPopup} setTrigger={setShowSignupPopup}>
                 <form onSubmit={handleSubmit} className="form">

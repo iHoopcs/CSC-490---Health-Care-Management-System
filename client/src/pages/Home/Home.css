@@ -11,3 +11,40 @@
 .row {
   width: fit-content;
 }
+
+
+/*Background Images*/
+.bg1 {
+  background-image: url('../../../public/images/workout-nutrition.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.bg2 {
+  background-image: url('../../../public/images/workout1.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.bg3 {
+  background-image: url('../../../public/images/workout2.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.bg4 {
+  background-image: url('../../../public/images/workout3.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.bg5 {
+  background-image: url('../../../public/images/workout-nutrition2.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}

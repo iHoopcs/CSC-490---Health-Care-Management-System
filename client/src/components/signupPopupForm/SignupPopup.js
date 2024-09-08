@@ -30,7 +30,7 @@ function SignupPopup() {
 
   return (
     <div>
-      <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1" className="btn btn-outline-secondary mb-5">Signup</button>
+      <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1" className="btn btn-outline-secondary mb-5 text-white">Signup</button>
       <Popup trigger={showSignupPopup} setTrigger={setShowSignupPopup}>
         <div className="input-fields">
           <span>Email: </span>
