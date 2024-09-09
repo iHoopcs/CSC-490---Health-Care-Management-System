@@ -30,7 +30,7 @@ function SignupPopup() {
 
   return (
     <div>
-      <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1" className="btn btn-outline-secondary">Signup</button>
+      <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1" className="btn btn-outline-secondary mb-5 text-white">Signup</button>
       <Popup trigger={showSignupPopup} setTrigger={setShowSignupPopup}>
         <div className="input-fields">
           <span>Email: </span>
@@ -75,7 +75,7 @@ function SignupPopup() {
               ? 'invalid-input' : ''}
             onChange={e => setWeight(e.target.value)} />
           <br />
-          <button onClick={() => submitSignupInformation()}>Signup</button>
+          <button onClick={() => submitSignupInformation()} className="btn btn-outline-primary w-100">Signup</button>
 
           {submissionErrors.length > 0 && (
             <div>
@@ -193,7 +193,7 @@ function SignupPopup() {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/signup', newUser);
+      const response = await axios.post('http://localhost:8080/api/auth/signup', newUser);
       console.log(response);
     } catch (error) {
       if (error.response && error.response.status === 400) {
