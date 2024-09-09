@@ -30,7 +30,8 @@ export const SideBar = (props) => {
         const userEmail = localStorage.getItem('userEmail'); 
         axios.get('http://localhost:8080/api/userData', {
             headers: {
-                'Authorization': `Bearer ${token} ${userEmail}`,
+                'Authorization': `Bearer ${token}`,
+                'X-User-Email': userEmail,
                 'Accept': 'application/json'
             }
         })

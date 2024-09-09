@@ -7,9 +7,10 @@ const fetchUserData = (req, res) => {
     const authHeader = req.headers.authorization; 
     const splitData = authHeader.split(' ')
     const token = splitData[1]
-    const userEmail = splitData[2]
-    if (token === null) return res.status(403).json({msg: 'Error: no token provided'})
+    const userEmail = req.headers['x-user-email'] //fetch email from custom header
     
+    if (!token) return res.status(403).json({msg: 'Error: no token provided'})
+    if (!userEmail) return res.status(403).json({msg: 'Error: no email included'})
     //verify JWT 
     jwt.verify(token, SECRET_KEY, async (err, decoded) => {
         if (err) return res.status(403).json({msg: 'Invalid token'})
