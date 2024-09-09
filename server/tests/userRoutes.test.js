@@ -44,8 +44,8 @@ describe("GET /api/userData", () => {
         )
     })
 
-    test('should return 200 status code, verify jwt & return {code, user}', async () => {
-        return request(app).get('/api/getUserData')
+    test('should return 200 status code, verify jwt & return {code, user}', () => {
+        return request(app).get('/api/userData')
             .set('Authorization', `Bearer ${token}`)
             .set('X-User-Email', newUser.email)
             .expect(200)
@@ -53,6 +53,13 @@ describe("GET /api/userData", () => {
                 expect(response.body).toHaveProperty('code')
                 expect(response.body).toHaveProperty('user')
             })
+    })
+
+    test('shoud return 403 status code, if token/email not provided' , () => {
+        return request(app).get('/api/userData')
+            .set('Authorization', null)
+            .set('X-User-Email', null)
+            .expect(403)
     })
 })
 
