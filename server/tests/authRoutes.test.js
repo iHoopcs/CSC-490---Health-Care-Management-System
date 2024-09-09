@@ -16,7 +16,7 @@ afterAll(async () => {
     await mongoMemoryServer.stop();
 });
 
-describe("POST /api/signup", () => {
+describe("POST /api/auth/signup", () => {
     //clear in-memory db before each test run
     beforeEach(async () => {
         await User.deleteMany({}); 
@@ -36,7 +36,7 @@ describe("POST /api/signup", () => {
 
     test('should return 400 status code if user already exists w/ email', async () => {
         //check for existing user
-        return request(app).post('/api/signup')
+        return request(app).post('/api/auth/signup')
             .send({
                 firstName: "newFirstName",
                 lastName: "newLastName",
@@ -53,7 +53,7 @@ describe("POST /api/signup", () => {
     })
 
     test('should return 201 status code & JSON {msg, user} if different email from existing db User', async () => {
-        return request(app).post('/api/signup')
+        return request(app).post('/api/auth/signup')
             .send({
                 firstName: "newFirstName",
                 lastName: "newLastName",
@@ -74,7 +74,7 @@ describe("POST /api/signup", () => {
     })
 });
 
-describe("POST /api/login", () => {
+describe("POST /api/auth/login", () => {
     let newUser; 
     beforeEach(async () => {
         //clear db Users & create User for check
@@ -94,7 +94,7 @@ describe("POST /api/login", () => {
     })
 
     test('should return 400 status code & error msg if user not found by email', async () => {
-        return request(app).post('/api/login')
+        return request(app).post('/api/auth/login')
             .send({
                 email: 'emailNotFound@gmail.com',
                 password: 'hashedPassword'
@@ -106,7 +106,7 @@ describe("POST /api/login", () => {
     })
 
     test('should return 400 status code & error msg if email is correct but password not', async () => {
-        return request(app).post('/api/login')
+        return request(app).post('/api/auth/login')
             .send({
                 email: 'existingEmail@gmail.com',
                 password: 'notHashedPassword'
@@ -118,7 +118,7 @@ describe("POST /api/login", () => {
     })
 
     test('should return 201 status code & {msg, token}', async () => {
-        return request(app).post('/api/login')
+        return request(app).post('/api/auth/login')
             .send({
                 email: 'existingEmail@gmail.com',
                 password: 'hashPassword'
