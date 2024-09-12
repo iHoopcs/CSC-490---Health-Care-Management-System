@@ -1,17 +1,13 @@
 const Exercise = require('../Models/exercise.js');
-const jwt = require('jsonwebtoken')
-const SECRET_KEY = process.env.SECRET_KEY;
 const NINJAS_API_KEY = process.env.NINJAS_API_KEY;
-const axios = require('axios');
 
-const fetchExercises = async (exercise, req, res) => {
+const fetchExercises = async (exerciseType, req, res) => {
   let options = {
     method: 'GET',
     headers: { 'x-api-key': NINJAS_API_KEY }
   }
 
-  const muscle = 'biceps';
-  let url = `https://api.api-ninjas.com/v1/exercises?muscle=${muscle}`
+  let url = `https://api.api-ninjas.com/v1/exercises?type=${exerciseType}`
 
   fetch(url, options)
     .then(res => res.json()) // parse response as JSON
