@@ -1,4 +1,3 @@
-const Exercise = require('../Models/exercise.js');
 const NINJAS_API_KEY = process.env.NINJAS_API_KEY;
 
 const fetchExercises = async (exerciseType, req, res) => {
@@ -9,14 +8,14 @@ const fetchExercises = async (exerciseType, req, res) => {
 
   let url = `https://api.api-ninjas.com/v1/exercises?type=${exerciseType}`
 
-  fetch(url, options)
+  return fetch(url, options)
     .then(res => res.json()) // parse response as JSON
     .then(data => {
-      console.log(data)
-      return res.json(data);
+      return data;
     })
     .catch(err => {
       console.log(`error ${err}`)
+      throw err;
     });
 }
 
