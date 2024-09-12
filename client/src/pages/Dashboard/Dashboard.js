@@ -44,7 +44,7 @@ export const Dashboard = () => {
 
                 <div className='col-sm-auto'>
                   <div className='row mb-5'>
-                    <DashboardCard displayText="Want to connect with others?" backgroundImgSrc="https://cdn5.vectorstock.com/i/1000x1000/62/54/social-chat-logo-vector-31826254.jpg" href="/social" textColor="black" width="25vw" height="20vh"/>
+                    <DashboardCard displayText="Want to connect with others?" backgroundImgSrc="https://www.freeiconspng.com/thumbs/live-chat-icon/live-chat-icon-6.jpg" href="/social" textColor="black" width="25vw" height="20vh"/>
                   </div>
 
                   <div className='row'>
