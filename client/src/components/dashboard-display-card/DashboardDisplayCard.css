@@ -1,0 +1,10 @@
+a {
+    text-decoration: none;
+}
+a:link{
+    text-decoration: none;
+}
+
+a:hover {
+    opacity: 0.5;
+}

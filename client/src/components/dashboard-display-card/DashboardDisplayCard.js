@@ -1,7 +1,16 @@
 import React from 'react'
+import './DashboardDisplayCard.css'; 
 
 export const DashboardCard = (props) => {
-  const { displayText, backgroundImgSrc, textColor, width, height } = props; 
+  const { 
+    displayText, 
+    backgroundImgSrc, 
+    textColor, 
+    width, 
+    height,
+    href
+  } = props; 
+
   const cardStyle = {
     width: width, 
     height: height,
@@ -16,10 +25,13 @@ export const DashboardCard = (props) => {
   }
 
   return (
-    <>
+    <>  
+      <a href={href}>
         <div className='card' style={cardStyle}>
             <h5>{displayText}</h5>
         </div>
+      </a>
+          
     </>
   )
 }
