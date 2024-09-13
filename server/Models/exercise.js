@@ -8,6 +8,7 @@ const exerciseSchema = new Schema({
   equipment: String,
   difficulty: String,
   instructions: String,
+  duration: Number,
 });
 
 const Exercise = mongoose.model('Exercise', exerciseSchema);
