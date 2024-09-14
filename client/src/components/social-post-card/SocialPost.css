@@ -6,3 +6,8 @@ button {
 button:hover {
     opacity: 0.5;
 }
+
+.report {
+    width: 5vw;
+    background: none
+}

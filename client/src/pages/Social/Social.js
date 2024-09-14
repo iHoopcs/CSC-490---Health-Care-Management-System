@@ -7,6 +7,7 @@ import { Modal } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import './Social.css'; 
 
 export const Social = (props) => {
     const [posts, setPosts] = useState([]);
@@ -126,16 +127,19 @@ export const Social = (props) => {
                                     </Row>
                                 </Modal.Footer>
                             </Modal>
-                            {
-                                posts.map((post) => {
-                                    return (
-                                        <>
-                                            <SocialPost post={post}/>
-                                        </>
-                                    )
-                                    
-                                })
-                            }
+                            <div className='posts-container'>
+                                {
+                                    posts.map((post) => {
+                                        return (
+                                            <>
+                                                <SocialPost post={post}/>
+                                            </>
+                                        )
+                                        
+                                    })
+                                }
+                            </div>
+                            
                         </div>
                     </div>
                 </div>

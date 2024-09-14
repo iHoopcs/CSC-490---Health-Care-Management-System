@@ -1,12 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './SocialPost.css'; 
 import { FaHeart } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { AiFillDislike } from "react-icons/ai";
 import { FaMessage } from "react-icons/fa6";
+import { IoIosHeartEmpty } from "react-icons/io";
+import { FaRegThumbsDown } from "react-icons/fa";
 
 export const SocialPost = (props) => {
     const { post } = props; 
+
+    const [heartIsClicked, setHeartIsClicked] = useState(false); 
+    const [thumbsDownIsClicked, setThumbsDownIsClicked] = useState(false); 
+    const [reportIsClicked, setReportIsClicked] = useState(false); 
+
+    const handleHeart = () => {
+        setHeartIsClicked(true)
+        setThumbsDownIsClicked(false)
+    }
+
+    const handleDislike = () => {
+        setThumbsDownIsClicked(true)
+        setHeartIsClicked(false) 
+    }
+
+    const handleReport = () => {
+        setReportIsClicked(!reportIsClicked)
+    }
+
 
     return (
         <>  
@@ -20,12 +41,30 @@ export const SocialPost = (props) => {
                 <div className='card-footer p-3'>
                     <div className='d-flex justify-content-between'>
                         <div>
-                            <button><FaHeart /></button>
-                            <button className='mx-4'><AiFillDislike /></button>
+                            {
+                                heartIsClicked === true 
+                                    ? <button><FaHeart /></button>
+                                    : <button onClick={handleHeart}><IoIosHeartEmpty /></button>
+                            }
+                            {
+                                thumbsDownIsClicked === true
+                                    ? <button className='mx-4'><AiFillDislike /></button>
+                                    : <button className='mx-4' onClick={handleDislike}><FaRegThumbsDown /></button>
+                             
+                            }
                             <button><FaMessage /></button>
+                            
+                        </div>
+
+                        <div>
+                        <button onClick={handleReport}><BsThreeDots /></button>
+                            {
+                                reportIsClicked === true
+                                    ? <button className='btn btn-outline-danger report'>Report</button>
+                                    : ''
+                            }
                         </div>
                         
-                        <button><BsThreeDots /></button>
                     </div>
                     <div>
                         
