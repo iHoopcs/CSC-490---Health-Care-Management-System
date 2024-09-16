@@ -19,6 +19,7 @@ function SignupPopup() {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [accountName, setAccountName] = useState(''); 
   const [email, setEmail] = useState('');
   const [age, setAge] = useState('');
   const [height, setHeight] = useState('');
@@ -59,6 +60,8 @@ function SignupPopup() {
             className={submissionAttempted && !validateName(lastName)
               ? 'invalid-input' : ''}
             onChange={e => setLastName(e.target.value)} />
+          <span>Account Name:</span>
+          <input type="text" value={accountName} onChange={e => setAccountName(e.target.value)} />
           <span>Age: </span>
           <input type="number" value={age} placeholder="years"
             className={submissionAttempted && !validateAge(age)
@@ -189,7 +192,8 @@ function SignupPopup() {
       weight: weight,
       age: age,
       password: password,
-      email: email
+      email: email,
+      accountName: accountName
     };
 
     try {

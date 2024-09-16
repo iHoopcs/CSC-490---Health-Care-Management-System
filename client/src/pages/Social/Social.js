@@ -22,6 +22,7 @@ export const Social = (props) => {
         const user = JSON.parse(sessionStorage.getItem('userProfileData'))
         setUserFirstName(user.firstName)
         setUserLastName(user.lastName)
+        setUserAccountName(user.accountName)
     }
     const handleCancelPostModal = () => {
         setPostModalVisibility(false); 
@@ -31,7 +32,7 @@ export const Social = (props) => {
         const newPost = {
             firstName: userFirstName, 
             lastName: userLastName, 
-            accountName: 'iHoopcs', 
+            accountName: userAccountName, 
             message: postMessage
         }
 
@@ -98,15 +99,15 @@ export const Social = (props) => {
                                 <form>
                                     <div class="form-group">
                                         <label for="firstName">First Name</label>
-                                        <input type="email" class="form-control" id="firstName" placeholder="Caleb" disabled />
+                                        <input type="email" class="form-control" id="firstName" placeholder={userFirstName} disabled />
                                     </div>
                                     <div class="form-group mt-3">
                                         <label for="lastName">Last Name</label>
-                                        <input type="password" class="form-control" id="lastName" placeholder='Simmons' disabled />
+                                        <input type="password" class="form-control" id="lastName" placeholder={userLastName} disabled />
                                     </div>
                                     <div class="form-group mt-3">
                                         <label for="accountName">Account Name</label>
-                                        <input type="password" class="form-control" id="accountName" placeholder='iHoopcs' disabled />
+                                        <input type="password" class="form-control" id="accountName" placeholder={userAccountName} disabled />
                                     </div>
                                     <div class="form-group mt-3">
                                         <label for="postMessage">Message</label>
