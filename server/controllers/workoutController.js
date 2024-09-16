@@ -2,9 +2,6 @@ const Exercise = require('../Models/exercise.js');
 const Workout = require('../Models/workout.js');
 const exerciseController = require('../controllers/exerciseController');
 
-const plans =
-  ['casual', 'weight-loss', 'building-muscle']
-
 const exerciseTypes =
   ['cardio', 'strength', 'stretching', 'strongman', 'powerlifting',
     'ploymetrics', 'olympic_weightlifting'];
@@ -12,11 +9,14 @@ const exerciseTypes =
 /*
  * generates a workout that consists of a mix of exercises
  */
-const generateWorkout = async (workoutPlan, req, res) => {
-  if (!plans.includes(workoutPlan)) {
-    console.error(`Invalid workout plan: ${workoutPlan}`);
-    throw new Error(`Invalid workout plan: ${workoutPlan}`);
-  }
+const generateWorkout = async (req, res) => {
+  const planData = {
+    workoutPlan,
+    workoutSchedule,
+    healthIssues,
+    gymAccess,
+    homeEquipment,
+  } = req.body;
 
   try {
     let exerciseData = [];
@@ -28,7 +28,7 @@ const generateWorkout = async (workoutPlan, req, res) => {
 
     if (Array.isArray(exerciseData)) {
       let exercises = [];
-      exercises = filterExercisesByPlan(exerciseData, workoutPlan);
+      exercises = filterExercisesByPlan(exerciseData, planData);
 
       const workout = new Workout({
         plan: workoutPlan,
@@ -36,8 +36,6 @@ const generateWorkout = async (workoutPlan, req, res) => {
         completion: false,
         exercises: exercises,
       });
-
-      await workout.save();
 
       return res.json(workout);
     } else {
@@ -47,7 +45,6 @@ const generateWorkout = async (workoutPlan, req, res) => {
   catch (error) {
     console.error('Error fetching exercises:', error);
   }
-
 }
 
 /*
@@ -55,7 +52,7 @@ const generateWorkout = async (workoutPlan, req, res) => {
  * it is based on the workoutplan provided by the user but could include
  * more information from the user as the application grows
  */
-function filterExercisesByPlan(exerciseData, workoutPlan) {
+function filterExercisesByPlan(exerciseData, planData) {
   // TODO: since api does not provide reps / time we should provide a duration
   // for each exercise based on difficulty
   // TODO: find if user has access to equipment then allow equipment use for
@@ -83,7 +80,7 @@ function filterExercisesByPlan(exerciseData, workoutPlan) {
     exercises.push(exercise);
   }
 
-  if (workoutPlan == 'weight-loss') {
+  if (planData.workoutPlan == 'weight-loss') {
     let cardioExercises = exercises.filter(exercise => exercise.type === 'cardio');
     let stretchExercises = exercises.filter(exercise => exercise.type === 'stretching');
     let plyometricExercises = exercises.filter(exercise => exercise.type === 'plyometric');
@@ -94,7 +91,7 @@ function filterExercisesByPlan(exerciseData, workoutPlan) {
 
     return [...selectedCardio, ...selectedStretch, ...selectedPlyometric];
   }
-  else if (workoutPlan == 'casual') {
+  else if (planData.workoutPlan == 'casual') {
     let cardioExercises = exercises.filter(exercise => exercise.type === 'cardio');
     let strengthExercises = exercises.filter(exercise => exercise.type === 'strength');
     let stretchExercises = exercises.filter(exercise => exercise.type === 'stretching');
@@ -105,7 +102,7 @@ function filterExercisesByPlan(exerciseData, workoutPlan) {
 
     return [...selectedCardio, ...selectedStretch, ...selectedStrength];
   }
-  else if (workoutPlan == 'building-muscle') {
+  else if (planData.workoutPlan == 'building-muscle') {
     let strengthExercises = exercises.filter(exercise => exercise.type === 'strength');
     let powerliftingExercises = exercises.filter(exercise => exercise.type === 'powerlifting');
     let olympicExercises = exercises.filter(exercise => exercise.type === 'olympic_weightlifting');
