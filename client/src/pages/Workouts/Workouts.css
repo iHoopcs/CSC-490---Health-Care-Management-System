@@ -1,5 +1,6 @@
 .card-container {
-  width: 400px; /* Width of each flip card */
+  width: 30%; /* Width of each flip card */
+  padding: 3%;
 }
 
 .card-flip {
@@ -21,8 +22,8 @@
   width: 100%;
   background: #fff;
   color: #333;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border: 5% solid #ddd;
+  border-radius: 80px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   text-align: center;
   position: absolute;
@@ -36,7 +37,7 @@
 
 .card-image {
   width: 100%; /* Same width as flip cards */
-  height: 200px; /* Fixed height for images */
+  height: 80%; /* Fixed height for images */
   object-fit: cover; /* Ensure images cover the area without distortion */
   margin-bottom: 10px; /* Add space between image and text */
 }
