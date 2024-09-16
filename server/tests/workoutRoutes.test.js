@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const Workout = require("../Models/workout.js");
 const Exercise = require("../Models/exercise.js");
+const workoutController = require('./workoutController');
 
 let mongoMemoryServer;
 beforeAll(async () => {
@@ -16,22 +17,10 @@ afterAll(async () => {
   await mongoMemoryServer.stop();
 });
 
-describe("GET /api/workout/weight-loss", () => {
-  test('should return data for weight loss workout plan', async () => {
-    async () => {
-      const response = await request(app).get('/api/workout/weight-loss');
-
-      expect(response.statusCode).toBe(200);
-      expect(response.body).not.toBeNull();
-    }
-  });
-});
-
-
 describe('Workout Model Test', () => {
   test('create & save workout successfully', async () => {
     const workoutData = {
-      plan: 'weight-loss', date: '2024-01-01',
+      workoutPlan: 'weight-loss', date: '2024-01-01',
       completion: false, exercises: []
     };
 

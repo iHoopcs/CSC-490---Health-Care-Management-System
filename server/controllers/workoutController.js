@@ -53,17 +53,6 @@ const generateWorkout = async (req, res) => {
  * more information from the user as the application grows
  */
 function filterExercisesByPlan(exerciseData, planData) {
-  // TODO: since api does not provide reps / time we should provide a duration
-  // for each exercise based on difficulty
-  // TODO: find if user has access to equipment then allow equipment use for
-  // now assume access to equipment excluding large machines
-
-  exerciseData = exerciseData.reduce((unique, exercise) => {
-    return unique.filter(e => e.name === exercise.name).length > 0 ? unique : [...unique, exercise];
-  }, []);
-
-  exerciseData = exerciseData.filter(exercise => exercise.equipment != 'machine');
-
   let exercises = [];
 
   for (let data of exerciseData) {
@@ -78,6 +67,19 @@ function filterExercisesByPlan(exerciseData, planData) {
     })
 
     exercises.push(exercise);
+  }
+
+  exercises = exercises.reduce((unique, exercise) => {
+    return unique.filter(e => e.name === exercise.name).length > 0 ? unique : [...unique, exercise];
+  }, []);
+
+  if (planData.gymAccess == false) {
+    exercises = exercises.filter(exercise => exercise.equipment != 'machine');
+    exercises = exercises.filter(exercise => planData.homeEquipment.includes(exercise.equipment) || exercise.equipment == 'body_only');
+  }
+
+  if (planData.healthIssues != null || planData.healthIssues != '') {
+    exercises = exercises.filter(exercise => exercise.difficulty != 'expert');
   }
 
   if (planData.workoutPlan == 'weight-loss') {
@@ -102,7 +104,7 @@ function filterExercisesByPlan(exerciseData, planData) {
 
     return [...selectedCardio, ...selectedStretch, ...selectedStrength];
   }
-  else if (planData.workoutPlan == 'building-muscle') {
+  else if (planData.workoutPlan == 'build-muscle') {
     let strengthExercises = exercises.filter(exercise => exercise.type === 'strength');
     let powerliftingExercises = exercises.filter(exercise => exercise.type === 'powerlifting');
     let olympicExercises = exercises.filter(exercise => exercise.type === 'olympic_weightlifting');
@@ -127,7 +129,7 @@ function calculateExerciseDuration(difficulty) {
       return 10;
     case 'intermediate':
       return 5;
-    case 'hard':
+    case 'expert':
       return 3;
     default:
       return 3;
