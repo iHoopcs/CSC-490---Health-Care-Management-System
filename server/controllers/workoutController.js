@@ -1,5 +1,6 @@
 const Exercise = require('../Models/exercise.js');
 const Workout = require('../Models/workout.js');
+const WorkoutPrefs = require('../Models/workoutPrefs.js');
 const exerciseController = require('../controllers/exerciseController');
 
 const exerciseTypes =
@@ -10,13 +11,11 @@ const exerciseTypes =
  * generates a workout that consists of a mix of exercises
  */
 const generateWorkout = async (req, res) => {
-  const planData = {
-    workoutPlan,
-    workoutSchedule,
-    healthIssues,
-    gymAccess,
-    homeEquipment,
-  } = req.body;
+  const userEmail = String(req.body.userEmail);
+  const planPrefs = await WorkoutPrefs.findOne({ userEmail: userEmail });
+
+  console.log(userEmail);
+  console.log(planPrefs);
 
   try {
     let exerciseData = [];
@@ -28,10 +27,10 @@ const generateWorkout = async (req, res) => {
 
     if (Array.isArray(exerciseData)) {
       let exercises = [];
-      exercises = filterExercisesByPlan(exerciseData, planData);
+      exercises = filterExercisesByPlan(exerciseData, planPrefs);
 
       const workout = new Workout({
-        plan: workoutPlan,
+        plan: planPrefs.workoutPlan,
         date: new Date().toISOString(),
         completion: false,
         exercises: exercises,
@@ -52,7 +51,7 @@ const generateWorkout = async (req, res) => {
  * it is based on the workoutplan provided by the user but could include
  * more information from the user as the application grows
  */
-function filterExercisesByPlan(exerciseData, planData) {
+function filterExercisesByPlan(exerciseData, planPrefs) {
   let exercises = [];
 
   for (let data of exerciseData) {
@@ -73,16 +72,16 @@ function filterExercisesByPlan(exerciseData, planData) {
     return unique.filter(e => e.name === exercise.name).length > 0 ? unique : [...unique, exercise];
   }, []);
 
-  if (planData.gymAccess == false) {
-    exercises = exercises.filter(exercise => exercise.equipment != 'machine');
-    exercises = exercises.filter(exercise => planData.homeEquipment.includes(exercise.equipment) || exercise.equipment == 'body_only');
-  }
-
-  if (planData.healthIssues != null || planData.healthIssues != '') {
+  if (planPrefs.healthIssues != null || planPrefs.healthIssues != '') {
     exercises = exercises.filter(exercise => exercise.difficulty != 'expert');
   }
 
-  if (planData.workoutPlan == 'weight-loss') {
+  if (planPrefs.gymAccess == false) {
+    exercises = exercises.filter(exercise => exercise.equipment != 'machine');
+    exercises = exercises.filter(exercise => planPrefs.homeEquipment.includes(exercise.equipment) || exercise.equipment == 'body_only');
+  }
+
+  if (planPrefs.workoutPlan == 'weight-loss') {
     let cardioExercises = exercises.filter(exercise => exercise.type === 'cardio');
     let stretchExercises = exercises.filter(exercise => exercise.type === 'stretching');
     let plyometricExercises = exercises.filter(exercise => exercise.type === 'plyometric');
@@ -93,7 +92,7 @@ function filterExercisesByPlan(exerciseData, planData) {
 
     return [...selectedCardio, ...selectedStretch, ...selectedPlyometric];
   }
-  else if (planData.workoutPlan == 'casual') {
+  else if (planPrefs.workoutPlan == 'casual') {
     let cardioExercises = exercises.filter(exercise => exercise.type === 'cardio');
     let strengthExercises = exercises.filter(exercise => exercise.type === 'strength');
     let stretchExercises = exercises.filter(exercise => exercise.type === 'stretching');
@@ -104,7 +103,7 @@ function filterExercisesByPlan(exerciseData, planData) {
 
     return [...selectedCardio, ...selectedStretch, ...selectedStrength];
   }
-  else if (planData.workoutPlan == 'build-muscle') {
+  else if (planPrefs.workoutPlan == 'build-muscle') {
     let strengthExercises = exercises.filter(exercise => exercise.type === 'strength');
     let powerliftingExercises = exercises.filter(exercise => exercise.type === 'powerlifting');
     let olympicExercises = exercises.filter(exercise => exercise.type === 'olympic_weightlifting');

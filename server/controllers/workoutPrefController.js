@@ -4,6 +4,7 @@ const WorkoutPrefs = require('../Models/workoutPrefs.js');
 const createWorkoutPreferences = async (req, res) => {
   const {
     userEmail,
+    workoutPlan,
     workoutSchedule,
     healthIssues,
     gymAccess,
@@ -17,6 +18,7 @@ const createWorkoutPreferences = async (req, res) => {
       if (foundUser) {
         const newWorkoutPrefs = new WorkoutPrefs({
           userEmail: userEmail,
+          workoutPlan: workoutPlan,
           workoutSchedule: workoutSchedule,
           healthIssues: healthIssues,
           gymAccess: gymAccess,
@@ -24,6 +26,7 @@ const createWorkoutPreferences = async (req, res) => {
         });
 
         await newWorkoutPrefs.save();
+        console.log('new user saved');
 
         return res.status(200).json({
           msg: 'Workout Preferences Created',
@@ -31,6 +34,7 @@ const createWorkoutPreferences = async (req, res) => {
         })
       }
       else {
+        console.log('no user exists');
         return res.status(400).send('Could not find account with inputted email')
       }
     })

@@ -9,7 +9,7 @@ const GeneratePlanPopup = ({
   handleDaySelection,
   healthIssues,
   setHealthIssues,
-  gymAccess,
+  gymAccess = false,
   toggleGymAccess,
   homeEquipment,
   handleEquipmentSelection,
@@ -20,16 +20,18 @@ const GeneratePlanPopup = ({
   const [generationError, setGenerationError] = useState('');
 
   const handleGeneratePlan = async () => {
-    const planData = {
+    const workoutPrefs = {
+      userEmail: localStorage.getItem('userEmail'),
       workoutPlan: 'build-muscle', // Static plan type for muscle building
-      workoutSchedule,
-      healthIssues,
-      gymAccess,
-      homeEquipment
+      workoutSchedule: workoutSchedule || ['none'],
+      healthIssues: healthIssues || ['none'],
+      gymAccess: gymAccess || false,
+      homeEquipment: homeEquipment || ['none']
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/workout/plan', planData);
+      const response = await axios.post('http://localhost:8080/api/workout/userPreferences', workoutPrefs);
+
       setGeneratedPlan(response.data); // Save the generated plan
       setGenerationError(''); // Clear any previous errors
       setSubmissionErrors([]); // Clear submission errors on successful plan generation
