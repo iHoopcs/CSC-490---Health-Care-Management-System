@@ -6,6 +6,9 @@ import { Profile } from './pages/Profile/Profile.js';
 import { Calendar } from './pages/Calendar/Calendar.js';
 import { Nutrition } from './pages/Nutrition/Nutrition.js';
 import { Workouts } from './pages/Workouts/Workouts.js';
+import {Muscle} from './pages/Workouts/plan_pages/Muscle';
+import {Weight} from './pages/Workouts/plan_pages/Weight';
+import {Casual} from './pages/Workouts/plan_pages/Casual';
 
 /** 
   * Entry point of the application used to manage the pages of the 
@@ -23,7 +26,10 @@ function App() {
           <Route path='/workouts' element={<Workouts />}/>
           <Route path='/nutrition' element={<Nutrition />}/>
           <Route path='/calendar' element={<Calendar />}/>
-        </Routes>
+          <Route path="/plan_pages/Muscle" element={<Muscle />} />
+          <Route path="/plan_pages/Weight" element={<Weight />} />
+          <Route path="/plan_pages/Casual" element={<Casual />} />
+          </Routes>
       </BrowserRouter>
     </>
   );
