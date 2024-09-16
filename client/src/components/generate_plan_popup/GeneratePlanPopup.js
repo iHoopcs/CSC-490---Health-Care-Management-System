@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './GeneratePlanPopup.css'; 
+import './GeneratePlanPopup.css';
 
 const GeneratePlanPopup = ({
   showPopup,
@@ -71,7 +71,7 @@ const GeneratePlanPopup = ({
                   <input
                     type="checkbox"
                     checked={healthIssues.includes(issue)}
-                    onChange={() => setHealthIssues(prev => 
+                    onChange={() => setHealthIssues(prev =>
                       prev.includes(issue) ? prev.filter(h => h !== issue) : [...prev, issue]
                     )}
                   />
@@ -117,8 +117,15 @@ const GeneratePlanPopup = ({
                 </label>
               ))}
             </div>
-
-            <button type="submit" className="btn btn-primary">Generate Plan</button>
+            <button type="submit" className="btn btn-primary" onClick={() =>
+              submissionErrors.length <= 0
+                ?
+                window.location.href = '/plan_pages/WorkoutPlan'
+                :
+                ''
+            }>
+              Generate Plan
+            </button>
           </form>
 
           {/* Display submission errors */}
