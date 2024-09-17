@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
 export const WorkoutPlan = () => {
@@ -9,41 +9,43 @@ export const WorkoutPlan = () => {
 
   useEffect(() => {
     const userEmail = localStorage.getItem('userEmail');
-
-    const generatePlanForDay = async (day) => {
-      const response = await axios.post('http://localhost:8080/api/workout/plan', { userEmail, day });
-      return { day, plan: response.data };
-    };
-
-    const getPlanDays = async () => {
-      const response = await axios.post('http://localhost:8080/api/workout/userPreferences', { userEmail });
-    }
-
-    const generatePlans = async () => {
-      const newPlans = new Array(days.length);
-      for (let i = 0; i < days.length; i++) {
-        const plan = await generatePlanForDay(days[i]);
-        newPlans[i] = plan;
-      }
-      setPlans(newPlans);
-      setLoading(false); // All plans have been generated
-    };
-
-    generatePlans();
+    generatePlans(userEmail);
   }, []);
+
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  const generatePlans = async (userEmail) => {
+    const response = await axios.post('http://localhost:8080/api/workout/plan', { userEmail });
+    const allExercises = response.data.exercises;
+
+    const newPlans = days.map(day => {
+      const plan = { day, exercises: shuffleArray([...allExercises]) };
+      return plan;
+    });
+
+    setPlans(newPlans);
+    setLoading(false); // All plans have been generated
+  };
 
   return (
     <Container>
       {loading && (
-        <div className="spinner-border" role="status">
-          <span className="sr-only">%</span>
-        </div>
+        <>
+          <div className="spinner-border" role="status"></div>
+          <span>Loading...</span>
+        </>
       )}
-      {plans.map((plan, index) => (
+      {!loading && plans.map((plan, index) => (
         <Row key={index}>
           <Col>
             <h5>{plan.day}</h5>
-            {plan.plan && plan.plan.exercises && plan.plan.exercises.map((exercise, i) => (
+            {plan.exercises.map((exercise, i) => (
               <Row key={i}>
                 <Col>{exercise.name}</Col>
               </Row>

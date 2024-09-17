@@ -31,10 +31,10 @@ const GeneratePlanPopup = ({
 
     try {
       const response = await axios.post('http://localhost:8080/api/workout/userPreferences', workoutPrefs);
-
       setGeneratedPlan(response.data); // Save the generated plan
       setGenerationError(''); // Clear any previous errors
       setSubmissionErrors([]); // Clear submission errors on successful plan generation
+      window.location.href = '/plan_pages/WorkoutPlan';
     } catch (error) {
       console.error('Plan generation failed:', error);
       setGeneratedPlan(null); // Clear any previous plan on failure
@@ -122,7 +122,8 @@ const GeneratePlanPopup = ({
             <button type="submit" className="btn btn-primary" onClick={() =>
               submissionErrors.length <= 0
                 ?
-                window.location.href = '/plan_pages/WorkoutPlan'
+                //window.location.href = '/plan_pages/WorkoutPlan'
+                ''
                 :
                 ''
             }>
