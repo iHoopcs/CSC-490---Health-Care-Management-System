@@ -6,6 +6,7 @@ import { Profile } from './pages/Profile/Profile.js';
 import { Calendar } from './pages/Calendar/Calendar.js';
 import { Nutrition } from './pages/Nutrition/Nutrition.js';
 import { Workouts } from './pages/Workouts/Workouts.js';
+import { Social } from './pages/Social/Social.js';
 
 /** 
   * Entry point of the application used to manage the pages of the 
@@ -23,6 +24,7 @@ function App() {
           <Route path='/workouts' element={<Workouts />}/>
           <Route path='/nutrition' element={<Nutrition />}/>
           <Route path='/calendar' element={<Calendar />}/>
+          <Route path='/social' element={<Social />}/>
         </Routes>
       </BrowserRouter>
     </>

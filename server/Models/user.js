@@ -31,6 +31,10 @@ const userSchema = new Schema({
         required: true,
         unique: true,
     },
+    accountName: {
+        type: String, 
+        required: true
+    }
     
     
 }, {timestamps: true})
