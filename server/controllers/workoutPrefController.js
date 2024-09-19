@@ -16,21 +16,24 @@ const createWorkoutPreferences = async (req, res) => {
   })
     .then(async (foundUser) => {
       if (foundUser) {
-        const newWorkoutPrefs = new WorkoutPrefs({
-          userEmail: userEmail,
-          workoutPlan: workoutPlan,
-          workoutSchedule: workoutSchedule,
-          healthIssues: healthIssues,
-          gymAccess: gymAccess,
-          homeEquipment: homeEquipment,
-        });
+        // Check if WorkoutPrefs already exists for this user
+        let workoutPrefs = await WorkoutPrefs.findOneAndUpdate(
+          { userEmail: userEmail },
+          {
+            workoutPlan: workoutPlan,
+            workoutSchedule: workoutSchedule,
+            healthIssues: healthIssues,
+            gymAccess: gymAccess,
+            homeEquipment: homeEquipment,
+          },
+          { new: true, upsert: true }
+        );
 
-        await newWorkoutPrefs.save();
-        console.log('new user saved');
+        console.log('Workout preferences updated or created');
 
         return res.status(200).json({
-          msg: 'Workout Preferences Created',
-          workoutPrefs: newWorkoutPrefs
+          msg: 'Workout Preferences Updated or Created',
+          workoutPrefs: workoutPrefs
         })
       }
       else {
@@ -39,7 +42,6 @@ const createWorkoutPreferences = async (req, res) => {
       }
     })
 }
-
 
 module.exports = {
   updateWorkoutPreferences: createWorkoutPreferences,

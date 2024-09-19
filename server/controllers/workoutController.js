@@ -1,4 +1,3 @@
-const Exercise = require('../Models/exercise.js');
 const Workout = require('../Models/workout.js');
 const WorkoutPrefs = require('../Models/workoutPrefs.js');
 const exerciseController = require('../controllers/exerciseController');
@@ -55,7 +54,7 @@ function filterExercisesByPlan(exerciseData, planPrefs) {
   let exercises = [];
 
   for (let data of exerciseData) {
-    const exercise = new Exercise({
+    const exercise = {
       name: data.name,
       muscle: data.muscle,
       type: data.type,
@@ -63,7 +62,7 @@ function filterExercisesByPlan(exerciseData, planPrefs) {
       difficulty: data.difficulty,
       instructions: data.instructions,
       duration: calculateExerciseDuration(data.difficulty)
-    })
+    }
 
     exercises.push(exercise);
   }
