@@ -3,7 +3,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
 export const WorkoutPlan = () => {
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,9 +19,25 @@ export const WorkoutPlan = () => {
     return array;
   }
 
+  const checkAvalibleDays = async (email) => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/workout/userPreferences',
+        { params: { userEmail: email } });
+
+      const days = response.data.workoutSchedule;
+
+      return days;
+    } catch (error) {
+      console.error(`Error fetching user preferences: ${error}`);
+      return null;
+    }
+  }
+
   const generatePlans = async (userEmail) => {
     const response = await axios.post('http://localhost:8080/api/workout/plan', { userEmail });
     const allExercises = response.data.exercises;
+
+    const days = await checkAvalibleDays(userEmail);
 
     const newPlans = days.map(day => {
       const plan = { day, exercises: shuffleArray([...allExercises]) };
@@ -32,6 +47,7 @@ export const WorkoutPlan = () => {
     setPlans(newPlans);
     setLoading(false); // All plans have been generated
   };
+
 
   return (
     <Container>
