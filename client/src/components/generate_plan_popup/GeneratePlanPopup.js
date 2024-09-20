@@ -1,28 +1,52 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './GeneratePlanPopup.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Form } from 'react-bootstrap';
 
 const GeneratePlanPopup = ({
   showPopup,
   setShowPopup,
-  workoutSchedule,
-  handleDaySelection,
-  healthIssues,
-  setHealthIssues,
-  gymAccess = false,
-  toggleGymAccess,
-  homeEquipment,
-  handleEquipmentSelection,
-  submissionErrors,
-  setSubmissionErrors
+  planName,
 }) => {
   const [generatedPlan, setGeneratedPlan] = useState(null);
   const [generationError, setGenerationError] = useState('');
+  const [workoutSchedule, setWorkoutSchedule] = useState([]);
+  const [healthIssues, setHealthIssues] = useState([]);
+  const [gymAccess, toggleGymAccess] = useState(false);
+  const [homeEquipment, setHomeEquipment] = useState([]);
+  const [submissionErrors, setSubmissionErrors] = useState([]);
+
+
+  const handleDaySelection = (day) => {
+    if (workoutSchedule.includes(day)) {
+      setWorkoutSchedule(workoutSchedule.filter(d => d !== day));
+    } else {
+      setWorkoutSchedule([...workoutSchedule, day]);
+    }
+  };
+
+  const handleHealthIssues = (issue) => {
+    if (healthIssues.includes(issue)) {
+      setHealthIssues(healthIssues.filter(i => i !== issue));
+    } else {
+      setHealthIssues([...healthIssues, issue]);
+    }
+  }
+
+  const handleEquipmentSelection = (equipment) => {
+    if (homeEquipment.includes(equipment)) {
+      setHomeEquipment(homeEquipment.filter(e => e !== equipment));
+    } else {
+      setHomeEquipment([...homeEquipment, equipment]);
+    }
+  }
+
 
   const handleGeneratePlan = async () => {
     const workoutPrefs = {
       userEmail: localStorage.getItem('userEmail'),
-      workoutPlan: 'build-muscle', // Static plan type for muscle building
+      workoutPlan: planName,
       workoutSchedule: workoutSchedule || ['none'],
       healthIssues: healthIssues || ['none'],
       gymAccess: gymAccess || false,
@@ -31,13 +55,11 @@ const GeneratePlanPopup = ({
 
     try {
       const response = await axios.post('http://localhost:8080/api/workout/userPreferences', workoutPrefs);
-      setGeneratedPlan(response.data); // Save the generated plan
       setGenerationError(''); // Clear any previous errors
       setSubmissionErrors([]); // Clear submission errors on successful plan generation
       window.location.href = '/plan_pages/WorkoutPlan';
     } catch (error) {
       console.error('Plan generation failed:', error);
-      setGeneratedPlan(null); // Clear any previous plan on failure
       setGenerationError('Failed to generate the workout plan. Please try again.'); // Set error message
       setSubmissionErrors(['Failed to generate the workout plan. Please try again.']); // Set error message
     }
@@ -54,14 +76,14 @@ const GeneratePlanPopup = ({
             <div>
               <h3>Select Workout Days</h3>
               {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
-                <label key={day}>
-                  <input
-                    type="checkbox"
-                    checked={workoutSchedule.includes(day)}
-                    onChange={() => handleDaySelection(day)}
-                  />
-                  {day.charAt(0).toUpperCase() + day.slice(1)}   {/* Changes first letter to capital to make it more readable */}
-                </label>
+                <Form.Check
+                  key={day}
+                  type="checkbox"
+                  label={day.charAt(0).toUpperCase() + day.slice(1)}
+                  checked={workoutSchedule.includes(day)}
+                  onChange={() => handleDaySelection(day)}
+                  inline
+                />
               ))}
             </div>
 
@@ -69,56 +91,52 @@ const GeneratePlanPopup = ({
             <div>
               <h3>Select Health Issues</h3>
               {['diabetes', 'high blood pressure', 'asthma'].map(issue => (
-                <label key={issue}>
-                  <input
-                    type="checkbox"
-                    checked={healthIssues.includes(issue)}
-                    onChange={() => setHealthIssues(prev =>
-                      prev.includes(issue) ? prev.filter(h => h !== issue) : [...prev, issue]
-                    )}
-                  />
-                  {issue.charAt(0).toUpperCase() + issue.slice(1)}
-                </label>
+                <Form.Check
+                  key={issue}
+                  type="checkbox"
+                  label={issue.charAt(0).toUpperCase() + issue.slice(1)}
+                  checked={healthIssues.includes(issue)}
+                  onChange={() => handleHealthIssues(issue)}
+                  inline
+                />
               ))}
             </div>
-
-            {/* Gym access toggle */}
             <div>
               <h3>Do you have gym access?</h3>
-              <label>
-                <input
-                  type="radio"
-                  name="gymAccess"
-                  checked={gymAccess}
-                  onChange={() => toggleGymAccess(true)}
-                />
-                Yes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="gymAccess"
-                  checked={!gymAccess}
-                  onChange={() => toggleGymAccess(false)}
-                />
-                No
-              </label>
+              <Form.Check
+                type="radio"
+                id="gymAccessYes"
+                name="gymAccess"
+                label="Yes"
+                checked={gymAccess}
+                onChange={() => toggleGymAccess(true)}
+              />
+              <Form.Check
+                type="radio"
+                id="gymAccessNo"
+                name="gymAccess"
+                label="No"
+                checked={!gymAccess}
+                onChange={() => toggleGymAccess(false)}
+              />
             </div>
-
             {/* Home equipment selection */}
             <div>
               <h3>Select Home Equipment</h3>
               {['dumbbell', 'resistance band', 'barbell', 'elliptical', 'treadmill'].map(equipment => (
-                <label key={equipment}>
-                  <input
-                    type="checkbox"
-                    checked={homeEquipment.includes(equipment)}
-                    onChange={() => handleEquipmentSelection(equipment)}
-                  />
-                  {equipment.charAt(0).toUpperCase() + equipment.slice(1)}
-                </label>
+
+                <Form.Check
+                  type="checkbox"
+                  id={equipment}
+                  label={equipment.charAt(0).toUpperCase() + equipment.slice(1)}
+                  checked={homeEquipment.includes(equipment)}
+                  onChange={() => handleEquipmentSelection(equipment)}
+                  key={equipment}
+                  inline
+                />
               ))}
             </div>
+            <br />
             <button type="submit" className="btn btn-primary" onClick={() =>
               submissionErrors.length <= 0
                 ?
@@ -158,7 +176,7 @@ const GeneratePlanPopup = ({
             </div>
           )}
         </div>
-      </div>
+      </div >
     )
   );
 };
