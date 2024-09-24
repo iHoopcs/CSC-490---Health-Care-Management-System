@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
@@ -61,7 +60,7 @@ export const WorkoutPlan = () => {
   };
 
   const AcceptPlan = () => {
-    //TODO: Once calendar impemented push workkout to calandar
+    //TODO: Once calendar impemented push workout to calandar
 
     window.location.href = '/dashboard'
   }
@@ -89,7 +88,7 @@ export const WorkoutPlan = () => {
             {plans.map((plan, index) => (
               <div key={index} className="pb-2 mb-3 border-bottom">
                 <h1 className="text-center">{plan.day}</h1>
-                <table className="table">
+                <table className="table table-striped table-hover">
                   <thead>
                     <tr>
                       <th scope="col">
@@ -108,7 +107,7 @@ export const WorkoutPlan = () => {
                       >
                         <th scope="row"></th>
                         <td>{exercise.name}</td>
-                        <td>{`${exercise.duration} minutes`}</td>
+                        <td>{exercise.duration > 0 ? `${exercise.duration} minutes` : `${exercise.reps} reps`}</td>
                         <td>{exercise.muscle}</td>
                       </tr>
                     ))}

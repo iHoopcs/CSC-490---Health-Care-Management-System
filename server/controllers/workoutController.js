@@ -61,11 +61,22 @@ function filterExercisesByPlan(exerciseData, planPrefs) {
       equipment: data.equipment,
       difficulty: data.difficulty,
       instructions: data.instructions,
-      duration: calculateExerciseDuration(data.difficulty)
+      duration: 0,
+      reps: 0,
     }
 
     exercises.push(exercise);
   }
+
+  // filter adding duration or reps based on muscle
+  exercises.forEach((exercise) => {
+    if (exercise.type === 'cardio') {
+      exercise.duration = calculateExerciseDuration(exercise.difficulty);
+    }
+    else {
+      exercise.reps = calculateExerciseReps(exercise.difficulty);
+    }
+  });
 
   exercises = exercises.reduce((unique, exercise) => {
     return unique.filter(e => e.name === exercise.name).length > 0 ? unique : [...unique, exercise];
@@ -124,13 +135,26 @@ function filterExercisesByPlan(exerciseData, planPrefs) {
 function calculateExerciseDuration(difficulty) {
   switch (difficulty) {
     case 'beginner':
-      return 10;
+      return 15;
     case 'intermediate':
-      return 5;
+      return 10;
     case 'expert':
-      return 3;
+      return 5;
     default:
       return 3;
+  }
+}
+
+function calculateExerciseReps(difficulty) {
+  switch (difficulty) {
+    case 'beginner':
+      return 10;
+    case 'intermediate':
+      return 15;
+    case 'expert':
+      return 8;
+    default:
+      return 5;
   }
 }
 
