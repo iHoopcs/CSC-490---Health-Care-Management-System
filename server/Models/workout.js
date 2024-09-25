@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 
 const workoutSchema = new Schema({
+  userEmail: String,
   plan: String,
   date: String,
   completion: Boolean,

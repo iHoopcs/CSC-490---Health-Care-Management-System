@@ -59,8 +59,17 @@ export const WorkoutPlan = () => {
     setLoading(false); // All plans have been generated
   };
 
-  const AcceptPlan = () => {
-    //TODO: Once calendar impemented push workout to calandar
+  const AcceptPlan = async () => {
+    const userEmail = localStorage.getItem('userEmail');
+
+    //generate plans for the next month
+    await axios.post('http://localhost:8080/api/workout/updatePlan', { userEmail: userEmail })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(`Error: ${error}`);
+      });
 
     window.location.href = '/dashboard'
   }

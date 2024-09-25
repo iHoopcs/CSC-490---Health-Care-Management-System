@@ -5,7 +5,19 @@ const workoutPrefController = require('../controllers/workoutPrefController');
 const WorkoutPrefs = require('../Models/workoutPrefs');
 
 router.post('/plan', (req, res) => {
-  workoutController.generateWorkout(req, res);
+  workoutController.provideSampleWorkout(req, res);
+});
+
+router.post('/updatePlan', (req, res) => {
+  workoutController.updateWorkoutMonth(req, res);
+});
+
+router.post('/findWorkout', (req, res) => {
+  workoutController.findWorkout(req, res);
+});
+
+router.post('/setWorkoutComplete', (req, res) => {
+  workoutController.setWorkoutComplete(req, res);
 });
 
 router.post('/userPreferences', (req, res) => {
