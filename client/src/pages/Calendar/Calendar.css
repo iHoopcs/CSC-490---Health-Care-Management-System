@@ -1,0 +1,15 @@
+.calendar-container {
+    position: relative;
+  }
+  
+ /* Calendar.css */
+.hoverable:hover {
+  background-color: #007bff; /* Bootstrap primary color */
+  color: #fff;
+  border-color: #0056b3;
+  cursor: pointer;
+}
+
+.workout-event {
+  transition: background-color 0.3s, color 0.3s;
+}
