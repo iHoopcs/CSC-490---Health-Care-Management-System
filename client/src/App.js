@@ -6,10 +6,8 @@ import { Profile } from './pages/Profile/Profile.js';
 import { Calendar } from './pages/Calendar/Calendar.js';
 import { Nutrition } from './pages/Nutrition/Nutrition.js';
 import { Workouts } from './pages/Workouts/Workouts.js';
-import { Muscle } from './pages/Workouts/plan_pages/Muscle';
-import { Weight } from './pages/Workouts/plan_pages/Weight';
-import { Casual } from './pages/Workouts/plan_pages/Casual';
 import { WorkoutPlan } from './pages/Workouts/plan_pages/WorkoutPlan';
+import { WorkoutDay } from './pages/Workouts/plan_pages/WorkoutDay';
 
 /**
   * Entry point of the application used to manage the pages of the
@@ -25,11 +23,9 @@ function App() {
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/workouts' element={<Workouts />} />
+          <Route path='/workouts/day' element={<WorkoutDay />} />
           <Route path='/nutrition' element={<Nutrition />} />
           <Route path='/calendar' element={<Calendar />} />
-          <Route path="/plan_pages/Muscle" element={<Muscle />} />
-          <Route path="/plan_pages/Weight" element={<Weight />} />
-          <Route path="/plan_pages/Casual" element={<Casual />} />
           <Route path="/plan_pages/WorkoutPlan" element={<WorkoutPlan />} />
         </Routes>
       </BrowserRouter>
