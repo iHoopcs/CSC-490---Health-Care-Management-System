@@ -12,8 +12,15 @@ const signup = async (req, res) => {
         weight, 
         age, 
         password, 
-        email
+        email,
+        accountName
     } = req.body; 
+
+    if (!firstName || !lastName || !height || !weight || !age || !password || !email || !accountName){
+        res.status(404).json({
+            errMsg: 'An error occured! - Missing data in request'
+        })
+    }
 
     try {
         const existingUser = await User.findOne({
@@ -35,7 +42,8 @@ const signup = async (req, res) => {
             weight: weight, 
             age: age, 
             password: hashedPassword, 
-            email: email
+            email: email,
+            accountName: accountName
         })
 
         //save user database
