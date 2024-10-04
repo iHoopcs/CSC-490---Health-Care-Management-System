@@ -5,19 +5,15 @@ import axios from 'axios';
 
 export const Nutrition = () => {
   const userEmail = localStorage.getItem('userEmail');
-  const [nutritionDayPlans, setNutritionDayPlans] = useState([]);
+  const [todaysPlan, setTodaysPlan] = useState('');
 
   useEffect(() => {
-    const storedPlans = localStorage.getItem('nutritionDayPlans');
-    if (storedPlans) {
-      setNutritionDayPlans(JSON.parse(storedPlans));
-    } else {
-      generateWeekPlan().then(plan => {
-        setNutritionDayPlans(plan);
-        localStorage.setItem('nutritionDayPlans', JSON.stringify(plan));
-      });
-    }
+    const fetchTodaysPlan = async () => {
+      const plan = await getTodaysMealPlan();
+      setTodaysPlan(plan);
+    };
 
+    fetchTodaysPlan();
   }, []);
 
   const getFoodItem = async () => {
@@ -36,60 +32,67 @@ export const Nutrition = () => {
     }
   }
 
-  const generateWeekPlan = async () => {
-    const response = await axios.post('http://localhost:8080/api/food/genPlan',
+  const getTodaysMealPlan = async () => {
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    await axios.post('http://localhost:8080/api/food/updatePlan',
       { userEmail: userEmail });
+
+    const response = await axios.post('http://localhost:8080/api/food/findMeal',
+      { userEmail: userEmail, date: currentDate });
 
     return response.data;
   }
 
+  const setMealComplete = async () => {
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    await axios.post('http://localhost:8080/api/food/setMealComplete',
+      { userEmail: userEmail, date: currentDate });
+  }
 
   return (
     <Container>
       <Row className="w-100">
         <Col md={6}>
-          {nutritionDayPlans.map((item, index) => (
-            <div key={index}>
-              <h2>{item.day}</h2>
-              <table className="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Food</th>
-                    <th>Calories</th>
-                    <th>Protien</th>
-                    <th>Carbs</th>
-                    <th>Fat</th>
+          <h2>Today's Meal Plan</h2>
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Food</th>
+                <th>Calories</th>
+                <th>Protien</th>
+                <th>Carbs</th>
+                <th>Fat</th>
+              </tr>
+            </thead>
+            <tbody>
+              {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food) => {
+                const description = food.food_description;
+
+                const caloriesMatch = description.match(/Calories:\s*(\d+)kcal/);
+                const proteinMatch = description.match(/Protein:\s*([\d.]+)g/);
+                const carbsMatch = description.match(/Carbs:\s*([\d.]+)g/);
+                const fatMatch = description.match(/Fat:\s*([\d.]+)g/);
+
+                const calories = caloriesMatch ? caloriesMatch[1] : '';
+                const protein = proteinMatch ? proteinMatch[1] : '';
+                const carbs = carbsMatch ? carbsMatch[1] : '';
+                const fat = fatMatch ? fatMatch[1] : '';
+
+                return (
+                  <tr key={food.id}>
+                    <td>{food.food_name}</td>
+                    <td>{calories}</td>
+                    <td>{protein + "g"}</td>
+                    <td>{carbs + "g"}</td>
+                    <td>{fat + "g"}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {item.foods.map((food) => {
-                    const description = food.food_description;
-
-                    const caloriesMatch = description.match(/Calories:\s*(\d+)kcal/);
-                    const proteinMatch = description.match(/Protein:\s*([\d.]+)g/);
-                    const carbsMatch = description.match(/Carbs:\s*([\d.]+)g/);
-                    const fatMatch = description.match(/Fat:\s*([\d.]+)g/);
-
-                    const calories = caloriesMatch ? caloriesMatch[1] : '';
-                    const protein = proteinMatch ? proteinMatch[1] : '';
-                    const carbs = carbsMatch ? carbsMatch[1] : '';
-                    const fat = fatMatch ? fatMatch[1] : '';
-
-                    return (
-                      <tr>
-                        <td>{food.food_name}</td>
-                        <td>{calories}</td>
-                        <td>{protein + "g"}</td>
-                        <td>{carbs + "g"}</td>
-                        <td>{fat + "g"}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ))}
-          <button onClick={() => getFoodItem()}>Click me</button>
+                );
+              })}
+            </tbody>
+          </table>
+          <button onClick={() => setMealComplete()}>set meal complete</button>
         </Col>
       </Row>
     </Container>
