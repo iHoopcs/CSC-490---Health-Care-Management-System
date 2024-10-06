@@ -6,10 +6,12 @@ import { Profile } from './pages/Profile/Profile.js';
 import { Calendar } from './pages/Calendar/Calendar.js';
 import { Nutrition } from './pages/Nutrition/Nutrition.js';
 import { Workouts } from './pages/Workouts/Workouts.js';
+import { WorkoutPlan } from './pages/Workouts/plan_pages/WorkoutPlan';
+import { WorkoutDay } from './pages/Workouts/plan_pages/WorkoutDay';
 import { Social } from './pages/Social/Social.js';
 
-/** 
-  * Entry point of the application used to manage the pages of the 
+/**
+  * Entry point of the application used to manage the pages of the
   * application via functionallity of the react-router-dom
 */
 function App() {
@@ -21,10 +23,12 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/profile' element={<Profile />} />
-          <Route path='/workouts' element={<Workouts />}/>
-          <Route path='/nutrition' element={<Nutrition />}/>
-          <Route path='/calendar' element={<Calendar />}/>
-          <Route path='/social' element={<Social />}/>
+          <Route path='/workouts/day' element={<WorkoutDay />} />
+          <Route path="/plan_pages/WorkoutPlan" element={<WorkoutPlan />} />
+          <Route path='/workouts' element={<Workouts />} />
+          <Route path='/nutrition' element={<Nutrition />} />
+          <Route path='/calendar' element={<Calendar />} />
+          <Route path='/social' element={<Social />} />
         </Routes>
       </BrowserRouter>
     </>
