@@ -6,11 +6,31 @@ import axios from 'axios';
 export const Nutrition = () => {
   const userEmail = localStorage.getItem('userEmail');
   const [todaysPlan, setTodaysPlan] = useState('');
+  const [userNutritionPlan, setUserNutritionPlan] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  const weightLossInfo = `You're current plan is the weight loss plan. This
+    plan creates a meal plan consisting foods such as fruit, lean meats, and
+    leafy greens. The calorie range is between 1200-1500 calories per day.`
+
+  const casualInfo = `You're current plan is the casual plan. This plan consists 
+    of a variety of foods. The calorie range is between 1600-2000 calories per day.`;
+
+  const muscleBuildingInfo = `You're current plan is the muscle building plan. This
+    plan consists of high protien foods including lean meats, nuts, eggs, and 
+    protien shakes. The calorie range is between 2000-2500 calories per day.`;
+
+  const planInfo = userNutritionPlan === 'weight-loss' ? weightLossInfo :
+    userNutritionPlan === 'casual' ? casualInfo :
+      muscleBuildingInfo;
 
   useEffect(() => {
     const fetchTodaysPlan = async () => {
       const plan = await getTodaysMealPlan();
       setTodaysPlan(plan);
+      const userPlan = await getUserNutritionPlan();
+      setUserNutritionPlan(userPlan);
+      setIsLoading(false);
     };
 
     fetchTodaysPlan();
@@ -51,50 +71,89 @@ export const Nutrition = () => {
       { userEmail: userEmail, date: currentDate });
   }
 
+  const getUserNutritionPlan = async () => {
+    const response = await axios.get('http://localhost:8080/api/workout/userPreferences',
+      { params: { userEmail: userEmail } });
+
+    console.log(response.data.workoutPlan);
+    return response.data.workoutPlan;
+
+  }
+
   return (
-    <Container>
-      <Row className="w-100">
-        <Col md={6}>
-          <h2>Today's Meal Plan</h2>
-          <table className="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th>Food</th>
-                <th>Calories</th>
-                <th>Protien</th>
-                <th>Carbs</th>
-                <th>Fat</th>
-              </tr>
-            </thead>
-            <tbody>
-              {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food) => {
-                const description = food.food_description;
+    <div>
+      {
+        isLoading ? (
+          <>
+            <div className="spinner-border" role="status"></div>
+            <span>Loading Today's Meal Plan</span>
+            <div className="spinner-border" role="status"></div>
+          </>
+        ) : (
+          <Container>
+            <Row className="w-100">
+              <Col md={6}>
+                <h2>
+                  Welcome to Today's {userNutritionPlan &&
+                    <span class="badge rounded-circle text-dark" style={{ backgroundColor: 'yellow', padding: '10px' }}>
+                      {" " + userNutritionPlan.toString() + " "}
+                    </span>
+                  } Meal Plan
+                </h2>
+                <table className="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>Food</th>
+                      <th>Calories</th>
+                      <th>Protien</th>
+                      <th>Carbs</th>
+                      <th>Fat</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food) => {
+                      const description = food.food_description;
 
-                const caloriesMatch = description.match(/Calories:\s*(\d+)kcal/);
-                const proteinMatch = description.match(/Protein:\s*([\d.]+)g/);
-                const carbsMatch = description.match(/Carbs:\s*([\d.]+)g/);
-                const fatMatch = description.match(/Fat:\s*([\d.]+)g/);
+                      const caloriesMatch = description.match(/Calories:\s*(\d+)kcal/);
+                      const proteinMatch = description.match(/Protein:\s*([\d.]+)g/);
+                      const carbsMatch = description.match(/Carbs:\s*([\d.]+)g/);
+                      const fatMatch = description.match(/Fat:\s*([\d.]+)g/);
 
-                const calories = caloriesMatch ? caloriesMatch[1] : '';
-                const protein = proteinMatch ? proteinMatch[1] : '';
-                const carbs = carbsMatch ? carbsMatch[1] : '';
-                const fat = fatMatch ? fatMatch[1] : '';
+                      const calories = caloriesMatch ? caloriesMatch[1] : '';
+                      const protein = proteinMatch ? proteinMatch[1] : '';
+                      const carbs = carbsMatch ? carbsMatch[1] : '';
+                      const fat = fatMatch ? fatMatch[1] : '';
 
-                return (
-                  <tr key={food.id}>
-                    <td>{food.food_name}</td>
-                    <td>{calories}</td>
-                    <td>{protein + "g"}</td>
-                    <td>{carbs + "g"}</td>
-                    <td>{fat + "g"}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <button onClick={() => setMealComplete()}>set meal complete</button>
-        </Col>
-      </Row>
-    </Container>
+                      return (
+                        <tr key={food.id}>
+                          <td>{food.food_name}</td>
+                          <td>{calories}</td>
+                          <td>{protein + "g"}</td>
+                          <td>{carbs + "g"}</td>
+                          <td>{fat + "g"}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <h6 className="mt-3 ml-3">How We Generate Your Plans</h6>
+                <div class="border border-3 border-warning rounded p-3">
+                  <h6 className="mb-3">{planInfo}</h6>
+                  <h6 className="mb-3">
+                    FatSecret provides a large database of foods and thier nutritional
+                    information. This allows us to use key terms to generate a unique
+                    and personal nutrition plan for you.
+                  </h6>
+                  <h6>Learn more about FatSecret</h6>
+                  <h6>
+                    <a href="https://platform.fatsecret.com/about" target="_blank" rel="noopener noreferrer">https://platform.fatsecret.com/about</a>
+                  </h6>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        )
+      }
+    </div>
   )
 }

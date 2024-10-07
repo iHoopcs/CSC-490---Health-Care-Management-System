@@ -81,12 +81,9 @@ const updateNutritionPlan = async (req, res) => {
     for (let i = 0; i < futureDates.length; i++) {
       let mealPlan = await MealPlan.findOne({ userEmail: userEmail, date: futureDates[i] });
 
-      console.log(futureDates[i]);
-
       if (!mealPlan) {
         dateWithoutMealPlan = futureDates[i];
         mealsUpToDate = false;
-        console.log("meal 1")
         break;
       }
       else {
@@ -108,13 +105,10 @@ const updateNutritionPlan = async (req, res) => {
           foods: newMealWeek[i].foods
         });
 
-        console.log('pass');
-
         await newMealPlan.save();
       }
     }
     else {
-      console.log("meals already up to date");
       return res.json('meals already up to date');
     }
   }
