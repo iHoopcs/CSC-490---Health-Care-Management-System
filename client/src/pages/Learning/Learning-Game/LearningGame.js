@@ -7,14 +7,20 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 export const LearningGame = (props) => {
   const [testKnowledgeModalIsVisible, setTestKnowledgeModalIsVisible] = useState(false); 
+  const [testKnowledgeGame, setTestKnowledgeGame] = useState(false); 
   const [vocabModalIsVisible, setVocabModalIsVisible] = useState(false); 
   
+  //test knowledge modal controls
   const displayTestKnowledgeModal = () => {
-    setTestKnowledgeModalIsVisible(true)
+    setTestKnowledgeModalIsVisible(true) //display test knowledge game INFO modal
   }
   const handleNoTestKnowledgeModal = () => {
     setTestKnowledgeModalIsVisible(false)
   }
+  const displayTestKnowledgeGame = () => {
+    setTestKnowledgeGame(true) //display test knowledge GAME
+  }
+
 
   const displayVocabModal = () => {
     setVocabModalIsVisible(true)
@@ -61,7 +67,6 @@ export const LearningGame = (props) => {
                           Answer the bonus question for a special suprise! :)
                         </pre>
                     </h6>
-
                     <h6 className='mt-5 text-center'>Would you like to play?</h6>
                   </Modal.Body>
                   <Modal.Footer>
@@ -71,11 +76,40 @@ export const LearningGame = (props) => {
                           </Col>
 
                           <Col>
-                              <Button className='w-100'>Yes</Button>
+                              <Button onClick={displayTestKnowledgeGame} className='w-100'>Yes</Button>
                           </Col>
                       </Row>
                   </Modal.Footer>
               </Modal>
+              
+              {/*Test Knowledge Game*/}
+              <Modal {...props} size="xl" aria-labelledby="contained-modal-title-vcenter" centered show={testKnowledgeGame} >
+                  <Modal.Header>
+                      <Modal.Title id="contained-modal-title-vcenter" className='w-100 text-center'>
+                        Question 1
+                      </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body className='p-4'>
+                    <Row className=''>
+                      <Col className='text-center'>
+                        <Row><Button>Fruits, Vegetables, Grains, Protein Foods, Dairy</Button></Row>
+                      </Col>
+                    </Row>
+                  </Modal.Body>
+                  <Modal.Footer>
+                      <Row className='w-100 justify-content-around'>
+                          <Col>
+                              <Button onClick={handleNoTestKnowledgeModal} className='w-100'>No</Button>
+                          </Col>
+
+                          <Col>
+                              <Button onClick={displayTestKnowledgeGame} className='w-100'>Next</Button>
+                          </Col>
+                      </Row>
+                  </Modal.Footer>
+              </Modal>
+
+
               </div>
 
               <div className='col'>
