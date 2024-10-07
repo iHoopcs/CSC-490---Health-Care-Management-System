@@ -1,0 +1,12 @@
+.card-style {
+    height: 20vh;
+    width: 30vw;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s ease;
+}
+
+.card-style:hover{
+    cursor: pointer;
+    transform: scale(1.1);
+}

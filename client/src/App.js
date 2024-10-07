@@ -7,6 +7,8 @@ import { Calendar } from './pages/Calendar/Calendar.js';
 import { Nutrition } from './pages/Nutrition/Nutrition.js';
 import { Workouts } from './pages/Workouts/Workouts.js';
 import { Social } from './pages/Social/Social.js';
+import { LearningInfo } from './pages/Learning/Learning-Info/LearningInfo.js';
+import { LearningGame } from './pages/Learning/Learning-Game/LearningGame.js';
 
 /** 
   * Entry point of the application used to manage the pages of the 
@@ -25,6 +27,9 @@ function App() {
           <Route path='/nutrition' element={<Nutrition />}/>
           <Route path='/calendar' element={<Calendar />}/>
           <Route path='/social' element={<Social />}/>
+          <Route path='/learning-info' element={<LearningInfo />}/>
+          <Route path='/learning-game' element={<LearningGame/>}/>
+
         </Routes>
       </BrowserRouter>
     </>
