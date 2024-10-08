@@ -13,11 +13,11 @@ export const Nutrition = () => {
     plan creates a meal plan consisting foods such as fruit, lean meats, and
     leafy greens. The calorie range is between 1200-1500 calories per day.`
 
-  const casualInfo = `You're current plan is the casual plan. This plan consists 
+  const casualInfo = `You're current plan is the casual plan. This plan consists
     of a variety of foods. The calorie range is between 1600-2000 calories per day.`;
 
   const muscleBuildingInfo = `You're current plan is the muscle building plan. This
-    plan consists of high protien foods including lean meats, nuts, eggs, and 
+    plan consists of high protien foods including lean meats, nuts, eggs, and
     protien shakes. The calorie range is between 2000-2500 calories per day.`;
 
   const planInfo = userNutritionPlan === 'weight-loss' ? weightLossInfo :
@@ -105,32 +105,22 @@ export const Nutrition = () => {
                     <tr>
                       <th>Food</th>
                       <th>Calories</th>
-                      <th>Protien</th>
-                      <th>Carbs</th>
-                      <th>Fat</th>
+                      <th>Servings</th>
+                      <th>Protien dv%</th>
+                      <th>Carbs dv%</th>
+                      <th>Fat dv%</th>
                     </tr>
                   </thead>
                   <tbody>
                     {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food) => {
-                      const description = food.food_description;
-
-                      const caloriesMatch = description.match(/Calories:\s*(\d+)kcal/);
-                      const proteinMatch = description.match(/Protein:\s*([\d.]+)g/);
-                      const carbsMatch = description.match(/Carbs:\s*([\d.]+)g/);
-                      const fatMatch = description.match(/Fat:\s*([\d.]+)g/);
-
-                      const calories = caloriesMatch ? caloriesMatch[1] : '';
-                      const protein = proteinMatch ? proteinMatch[1] : '';
-                      const carbs = carbsMatch ? carbsMatch[1] : '';
-                      const fat = fatMatch ? fatMatch[1] : '';
-
                       return (
                         <tr key={food.id}>
-                          <td>{food.food_name}</td>
-                          <td>{calories}</td>
-                          <td>{protein + "g"}</td>
-                          <td>{carbs + "g"}</td>
-                          <td>{fat + "g"}</td>
+                          <td className="col-5">{food.name}</td>
+                          <td>{food.calories}</td>
+                          <td>{food.servings}</td>
+                          <td>{food.proteinDv + "%"}</td>
+                          <td>{food.carbsDv + "%"}</td>
+                          <td>{food.fatDv + "%"}</td>
                         </tr>
                       );
                     })}

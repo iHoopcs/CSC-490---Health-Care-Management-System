@@ -140,17 +140,58 @@ const generateWeekPlan = async (req, res) => {
     foods = getUnique(foods);
     foods = getRandomElements(foods);
 
+
     for (let i = 0; i < days.length; i++) {
       let totalCalories = 0;
       let dailyFoods = [];
 
       for (let j = i * maxFoodsPerDay; j < (i + 1) * maxFoodsPerDay; j++) {
-        let caloriesMatch = foods[j].food_description.match(/Calories:\s*(\d+)kcal/);
-        let calories = parseInt(caloriesMatch[1]);
+        if (j >= foods.length || foods[j] == null || foods[j].food_description == null) {
+          continue;
+        }
+
+        const description = foods[j].food_description;
+
+        let caloriesMatch = description.match(/Calories:\s*(\d+)kcal/);
+        let proteinMatch = description.match(/Protein:\s*([\d.]+)g/);
+        let carbsMatch = description.match(/Carbs:\s*([\d.]+)g/);
+        let fatMatch = description.match(/Fat:\s*([\d.]+)g/);
+
+        let calories = caloriesMatch ? parseInt(caloriesMatch[1]) : 0;
+        let protein = proteinMatch ? parseFloat(proteinMatch[1]) : 0.0;
+        let carbs = carbsMatch ? parseFloat(carbsMatch[1]) : 0.0;
+        let fat = fatMatch ? parseFloat(fatMatch[1]) : 0.0;
+
+        let proteinDailyValue = (protein / 50 * 100).toFixed(2);
+        let carbsDailyValue = (carbs / 275 * 100).toFixed(2);
+        let fatDailyValue = (fat / 75 * 100).toFixed(2);
+
+        let servings = 1;
+
+        if (calories > 1080) {
+          continue;
+        }
+
+        while (calories * servings < 360) {
+          servings++;
+        }
+
+        let nextFood = {
+          name: foods[j].food_name,
+          calories: calories,
+          servings: servings,
+          proteinDv: proteinDailyValue,
+          carbsDv: carbsDailyValue,
+          fatDv: fatDailyValue
+        }
+
+        console.log(nextFood);
+        console.log(calories);
+        console.log(totalCalories);
 
         if (totalCalories + calories <= maxCaloriesPerDay) {
           totalCalories += calories;
-          dailyFoods.push(foods[j]);
+          dailyFoods.push(nextFood);
         }
       }
 
