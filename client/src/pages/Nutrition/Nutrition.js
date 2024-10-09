@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'react-bootstrap';
+import { SideBar } from '../../components/dashboard-sidebar/SideBar';
 import axios from 'axios';
 
 export const Nutrition = () => {
@@ -81,69 +82,70 @@ export const Nutrition = () => {
   }
 
   return (
-    <div>
-      {
-        isLoading ? (
-          <>
-            <div className="spinner-border" role="status"></div>
-            <span>Loading Today's Meal Plan</span>
-            <div className="spinner-border" role="status"></div>
-          </>
-        ) : (
-          <Container>
-            <Row className="w-100">
-              <Col md={6}>
-                <h2>
-                  Welcome to Today's {userNutritionPlan &&
-                    <span class="badge rounded-circle text-dark" style={{ backgroundColor: 'yellow', padding: '10px' }}>
-                      {" " + userNutritionPlan.toString() + " "}
-                    </span>
-                  } Meal Plan
-                </h2>
-                <table className="table table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>Food</th>
-                      <th>Calories</th>
-                      <th>Servings</th>
-                      <th>Protien dv%</th>
-                      <th>Carbs dv%</th>
-                      <th>Fat dv%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food) => {
-                      return (
-                        <tr key={food.id}>
-                          <td className="col-5">{food.name}</td>
-                          <td>{food.calories}</td>
-                          <td>{food.servings}</td>
-                          <td>{food.proteinDv + "%"}</td>
-                          <td>{food.carbsDv + "%"}</td>
-                          <td>{food.fatDv + "%"}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <h6 className="mt-3 ml-3">How We Generate Your Plans</h6>
-                <div class="border border-3 border-warning rounded p-3">
-                  <h6 className="mb-3">{planInfo}</h6>
-                  <h6 className="mb-3">
-                    FatSecret provides a large database of foods and thier nutritional
-                    information. This allows us to use key terms to generate a unique
-                    and personal nutrition plan for you.
-                  </h6>
-                  <h6>Learn more about FatSecret</h6>
-                  <h6>
-                    <a href="https://platform.fatsecret.com/about" target="_blank" rel="noopener noreferrer">https://platform.fatsecret.com/about</a>
-                  </h6>
-                </div>
-              </Col>
-            </Row>
-          </Container>
-        )
-      }
+    <div className='container-fluid'>
+      <Row className="w-100">
+        <Col md={2}>
+          <SideBar />
+        </Col>
+        {
+          isLoading ? (
+            <>
+              <div className="spinner-border" role="status"></div>
+              <span>Loading Today's Meal Plan</span>
+              <div className="spinner-border" role="status"></div>
+            </>
+          ) : (
+            <Col md={6}>
+              <h2>
+                Welcome to Today's {userNutritionPlan &&
+                  <span class="badge rounded-circle text-dark" style={{ backgroundColor: 'yellow', padding: '10px' }}>
+                    {" " + userNutritionPlan.toString() + " "}
+                  </span>
+                } Meal Plan
+              </h2>
+              <table className="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Food</th>
+                    <th>Calories</th>
+                    <th>Servings</th>
+                    <th>Protien dv%</th>
+                    <th>Carbs dv%</th>
+                    <th>Fat dv%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food) => {
+                    return (
+                      <tr key={food.id}>
+                        <td className="col-5">{food.name}</td>
+                        <td>{food.calories}</td>
+                        <td>{food.servings}</td>
+                        <td>{food.proteinDv + "%"}</td>
+                        <td>{food.carbsDv + "%"}</td>
+                        <td>{food.fatDv + "%"}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <h6 className="text-center mt-5 ml-3">How We Generate Your Plans</h6>
+              <div class="border border-3 border-warning rounded p-3">
+                <h6 className="mb-3">{planInfo}</h6>
+                <h6 className="mb-3">
+                  FatSecret provides a large database of foods and thier nutritional
+                  information. This allows us to use key terms to generate a unique
+                  and personal nutrition plan for you.
+                </h6>
+                <h6>Learn more about FatSecret</h6>
+                <h6>
+                  <a href="https://platform.fatsecret.com/about" target="_blank" rel="noopener noreferrer">https://platform.fatsecret.com/about</a>
+                </h6>
+              </div>
+            </Col>
+          )
+        }
+      </Row>
     </div>
   )
 }

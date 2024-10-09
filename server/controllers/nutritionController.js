@@ -130,7 +130,15 @@ const generateWeekPlan = async (req, res) => {
     let foods = [];
     let foodDayPlans = [];
     const maxFoodsPerDay = 5;
-    const maxCaloriesPerDay = 2000;
+
+    let maxCaloriesPerDay = 2000;
+
+    if (nutritionPlan == 'weight-loss') {
+      maxCaloriesPerDay = 1500;
+    }
+    else if (nutritionPlan == 'muscle-building') {
+      maxCaloriesPerDay = 2400;
+    }
 
     for (let i = 0; i < 7; i++) {
       const newFoods = await findFoods(weight_loss_terms[i], maxFoodsPerDay);
