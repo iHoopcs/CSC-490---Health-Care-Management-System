@@ -10,3 +10,8 @@
     cursor: pointer;
     transform: scale(1.1);
 }
+
+.quiz-btn {
+    max-width: 500px;
+    width: 15vw; 
+}

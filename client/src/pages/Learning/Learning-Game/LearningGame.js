@@ -23,10 +23,45 @@ const questionsAndAnswers = [
     answer: 'urine color is dark yellow'
   },
   {
-    question: '',
-    choices: [],
-    answer: ''
+    question: 'What is nutrition?',
+    choices: ['how food works in the body', 'the study of the human body', 'the study of nature and our surroundings', 'the study of food and how it affects the health and growth of the body'],
+    answer: 'the study of food and how it affects the health and growth of the body'
   },
+  {
+    question: 'Which of the following is NOT a major system of the body?', 
+    choices: ['Digestive', 'Respiratory', 'Salivatory', 'Integumentary'],
+    answer: 'Salivatory'
+  },
+  {
+    question: 'Which of the following systems of the body is responsible for breaking down and digesting food?',
+    choices:['Muscular', 'Reproductive', 'Lymphatic', 'Digestive'],
+    answer: 'Digestive'
+  },
+  {
+    question: 'Approximately, how much water per day should men intake?',
+    choices:['16 cups of water', '100 cups of water', '24 cups of water', '500 cups of water'],
+    answer: '16 cups of water'
+  },
+  {
+    question: 'Which of the following foods / drinks are known to not be the best option when working to achieve optimal nutritional health?',
+    choices:['Alcohol', 'Energy Drinks', 'Processed foods', 'All of the above'],
+    answer: 'All of the above'
+  },
+  {
+    question: 'Which vitamin is primarily obtained from sunlight?',
+    choices: ['Vitamin D', 'Vitamin C', 'Vitamin A', 'Vitamin E'],
+    answer: 'Vitamin D'
+  },
+  {
+    question: 'Which nutrient is essential for muscle repair and growth?',
+    choices: ['Carbohydrates', 'Fats', 'Proteins', 'Vitamins'],
+    answer: 'Proteins'
+  },
+  {
+    question: 'Who is the reason the world is a better place?',
+    choices: ['YOU!', 'nope not this one', 'not this one eithere', 'try the first answer'],
+    answer: 'YOU!'
+  }
 ]
 
 export const LearningGame = (props) => {
@@ -51,6 +86,13 @@ export const LearningGame = (props) => {
   }
   const previousQuizGameQuestion = () => {
     setCurrentQuizGameIndex((prevIndex) => prevIndex-1)
+  }
+  
+  const submitQuiz = () => {
+    //calculate score
+    //save and display score
+
+    setQuizGameIsVisible(false)
   }
   
   return (
@@ -113,25 +155,29 @@ export const LearningGame = (props) => {
               <Modal {...props} size="xl" aria-labelledby="contained-modal-title-vcenter" centered show={quizGameIsVisible}>
                   <Modal.Header>
                       <Modal.Title id="contained-modal-title-vcenter" className='w-100 text-center'>
-                        Question {currentQuizGameQuestionIndex+1}
+                        {
+                          currentQuizGameQuestionIndex == 10
+                            ? <span>*BONUS QUESTION*</span>
+                            : <span>Question {currentQuizGameQuestionIndex+1}</span>
+                        }
                       </Modal.Title>
                   </Modal.Header>
-                  <Modal.Body className='p-4 d-flex flex-column justify-content-center align-items-center'>
-                    <Col>
-                      <Row className='mb-4'><h5>{questionsAndAnswers[currentQuizGameQuestionIndex].question}</h5></Row>
-                        {
-                          //display each choice as a clickable button
-                          questionsAndAnswers[currentQuizGameQuestionIndex].choices.map((item, index) => {
-                            return (
-                              <>
-                                <Row key={index} className='mb-3'>
-                                  <button className='btn btn-outline-secondary'>{item}</button>
-                                </Row>
-                              </>
-                            )
-                          })
-                        }
-                    </Col>
+                  <Modal.Body className='p-4'>
+                        <Row className='mb-4 w-100 text-center'><h5>{questionsAndAnswers[currentQuizGameQuestionIndex].question}</h5></Row>
+                          {
+                            //display each choice as a clickable button
+                            questionsAndAnswers[currentQuizGameQuestionIndex].choices.map((item, index) => {
+                              return (
+                                <>
+                                  <Row key={index} className='mb-3 p-2 w-100'>
+                                    <div className='text-center'>
+                                      <button className='btn btn-outline-secondary quiz-btn p-3 w-100'><span className='fs-5'>{item}</span></button>
+                                    </div>
+                                  </Row>
+                                </>
+                              )
+                            })
+                          }
                   </Modal.Body>
                   <Modal.Footer>
                       <Row className='w-100 justify-content-around'>
@@ -144,9 +190,16 @@ export const LearningGame = (props) => {
                                 <Button onClick={previousQuizGameQuestion} className='w-100'>Previous</Button>
                               </Col>
                         }
-                          <Col>
-                              <Button onClick={nextQuizGameQuestion} className='w-100'>Next</Button>
-                          </Col>
+                        {
+                          currentQuizGameQuestionIndex == 10
+                            ? <Col>
+                                  <Button onClick={submitQuiz} className='w-100'>Submit</Button>
+                              </Col>
+                            : 
+                              <Col>
+                                <Button onClick={nextQuizGameQuestion} className='w-100'>Next</Button>
+                              </Col>
+                        }
                       </Row>
                   </Modal.Footer>
               </Modal>
