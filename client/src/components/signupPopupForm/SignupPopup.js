@@ -19,7 +19,7 @@ function SignupPopup() {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [accountName, setAccountName] = useState(''); 
+  const [accountName, setAccountName] = useState('');
   const [email, setEmail] = useState('');
   const [age, setAge] = useState('');
   const [height, setHeight] = useState('');
@@ -33,51 +33,66 @@ function SignupPopup() {
     <div>
       <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1" className="btn btn-outline-secondary mb-5 text-white">Signup</button>
       <Popup trigger={showSignupPopup} setTrigger={setShowSignupPopup}>
-        <div className="input-fields">
-          <span>Email: </span>
-          <input type="email" value={email} placeholder="example@site.com"
-            className={submissionAttempted && !validateEmail(email)
-              ? 'invalid-input' : ''}
-            onChange={e => setEmail(e.target.value)} />
-          <span>Password: </span>
-          <div className='password-input'>
-            <input type={passType} value={password}
-              className={submissionAttempted && !validatePassword(password)
+        <div className="input-fields mt-4">
+          <div className="group">
+            <label>Email: </label>
+            <input type="email" value={email} placeholder="example@site.com"
+              className={submissionAttempted && !validateEmail(email)
                 ? 'invalid-input' : ''}
-              onChange={e => setPassword(e.target.value)}
-            />
-            <span className="icon-span" onClick={togglePasswordVisable}>
-              <Icon className="icon-input" icon={icon} size={25} />
-            </span>
+              onChange={e => setEmail(e.target.value)} />
           </div>
-          <span>First Name: </span>
-          <input type="text" value={firstName}
-            className={submissionAttempted && !validateName(firstName)
-              ? 'invalid-input' : ''}
-            onChange={e => setFirstName(e.target.value)} />
-          <span>Last Name: </span>
-          <input type="text" value={lastName}
-            className={submissionAttempted && !validateName(lastName)
-              ? 'invalid-input' : ''}
-            onChange={e => setLastName(e.target.value)} />
-          <span>Account Name:</span>
-          <input type="text" value={accountName} onChange={e => setAccountName(e.target.value)} />
-          <span>Age: </span>
-          <input type="number" value={age} placeholder="years"
-            className={submissionAttempted && !validateAge(age)
-              ? 'invalid-input' : ''}
-            onChange={e => setAge(e.target.value)} />
-          <span>Height: </span>
-          <input type="number" value={height} placeholder="cm"
-            className={submissionAttempted && !validateHeight(height)
-              ? 'invalid-input' : ''}
-            onChange={e => setHeight(e.target.value)} />
-          <span>Weight: </span>
-          <input type="number" value={weight} placeholder="lbs"
-            className={submissionAttempted && !validateWeight(weight)
-              ? 'invalid-input' : ''}
-            onChange={e => setWeight(e.target.value)} />
-          <br />
+          <div className="group">
+            <span>Password: </span>
+            <div className='password-input'>
+              <input type={passType} value={password}
+                className={submissionAttempted && !validatePassword(password)
+                  ? 'invalid-input' : ''}
+                onChange={e => setPassword(e.target.value)}
+              />
+              <span className="icon-span" onClick={togglePasswordVisable}>
+                <Icon className="icon-input" icon={icon} size={25} />
+              </span>
+            </div>
+          </div>
+          <div className="group">
+            <span>First Name: </span>
+            <input type="text" value={firstName}
+              className={submissionAttempted && !validateName(firstName)
+                ? 'invalid-input' : ''}
+              onChange={e => setFirstName(e.target.value)} />
+          </div>
+          <div className="group">
+            <span>Last Name: </span>
+            <input type="text" value={lastName}
+              className={submissionAttempted && !validateName(lastName)
+                ? 'invalid-input' : ''}
+              onChange={e => setLastName(e.target.value)} />
+          </div>
+          <div className="group">
+            <span>Account Name:</span>
+            <input type="text" value={accountName} onChange={e => setAccountName(e.target.value)} />
+          </div>
+          <div className="group">
+            <span>Age: </span>
+            <input type="number" value={age} placeholder="years"
+              className={submissionAttempted && !validateAge(age)
+                ? 'invalid-input' : ''}
+              onChange={e => setAge(e.target.value)} />
+          </div>
+          <div className="group">
+            <span>Height: </span>
+            <input type="number" value={height} placeholder="cm"
+              className={submissionAttempted && !validateHeight(height)
+                ? 'invalid-input' : ''}
+              onChange={e => setHeight(e.target.value)} />
+          </div>
+          <div className="group mb-4">
+            <span>Weight: </span>
+            <input type="number" value={weight} placeholder="lbs"
+              className={submissionAttempted && !validateWeight(weight)
+                ? 'invalid-input' : ''}
+              onChange={e => setWeight(e.target.value)} />
+          </div>
           <button onClick={() => submitSignupInformation()} className="btn btn-outline-primary w-100">Signup</button>
 
           {submissionErrors.length > 0 && (
