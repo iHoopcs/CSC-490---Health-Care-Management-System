@@ -49,7 +49,6 @@ const removeDatesBefore = (dates, date) => {
   });
 }
 
-
 const getDayOfWeek = (formattedDate) => {
   const date = parseDate(formattedDate);
   const dayNames = [
@@ -60,4 +59,4 @@ const getDayOfWeek = (formattedDate) => {
   return dayNames[dayOfWeek];
 }
 
-module.exports = { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore };
+module.exports = { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore, getDayOfWeek };

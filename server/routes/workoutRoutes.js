@@ -16,6 +16,10 @@ router.post('/findWorkout', (req, res) => {
   workoutController.findWorkout(req, res);
 });
 
+router.post('/deletePlans', (req, res) => {
+  workoutController.deleteWorkouts(req, res);
+});
+
 router.post('/setWorkoutComplete', (req, res) => {
   workoutController.setWorkoutComplete(req, res);
 });

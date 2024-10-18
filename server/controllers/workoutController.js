@@ -38,13 +38,12 @@ const updateWorkoutMonth = async (req, res) => {
         });
 
         await newWorkout.save();
-        res.status(201).json({
-          msg: '*Workout Created*'
-        })
       }
     }
 
-    return res.json('workouts updated');
+    res.status(201).json({
+      msg: '*Workouts Created*'
+    })
   }
   catch (err) {
     console.error('Error updating workouts:', err);
@@ -60,9 +59,6 @@ const findWorkout = async (req, res) => {
   const userEmail = String(req.body.userEmail);
   const date = String(req.body.date);
 
-  console.log(userEmail);
-  console.log(date);
-
   const workout = await Workout.findOne({ userEmail: userEmail, date: date });
 
   if (!workout) {
@@ -70,6 +66,24 @@ const findWorkout = async (req, res) => {
   }
 
   return res.status(200).json(workout);
+}
+
+
+const deleteWorkouts = async (req, res) => {
+  try {
+    const userEmail = String(req.body.userEmail);
+
+    const result = await Workout.deleteMany({ userEmail: userEmail });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'No workouts found for this user' });
+    }
+
+    return res.status(200).json({ message: 'All workouts deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting workouts:', err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
 const setWorkoutComplete = async (req, res) => {
@@ -90,9 +104,6 @@ const setWorkoutComplete = async (req, res) => {
 const generateWorkout = async (req, res) => {
   const userEmail = String(req.body.userEmail);
   const planPrefs = await WorkoutPrefs.findOne({ userEmail: userEmail });
-
-  console.log(userEmail);
-  console.log(planPrefs);
 
   try {
     let exerciseData = [];
@@ -269,5 +280,6 @@ module.exports = {
   updateWorkoutMonth,
   findWorkout,
   setWorkoutComplete,
+  deleteWorkouts,
 }
 
