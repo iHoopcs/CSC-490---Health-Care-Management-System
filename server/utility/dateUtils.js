@@ -28,4 +28,29 @@ const getDaysFromDate = (formattedDate, amount) => {
   return dates;
 }
 
-module.exports = { formatDate, parseDate, getDaysFromDate };
+const filterDateDays = (dates, days) => {
+  const allDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday',
+    'friday', 'saturday'];
+
+  return dates.filter(dateString => {
+    let date = parseDate(dateString);
+    let dayOfWeek = date.getDay();
+    let dayName = allDays[dayOfWeek];
+    return days.includes(dayName);
+  });
+}
+
+const removeDatesBefore = (dates, date) => {
+  let thresholdDate = parseDate(date);
+
+  return dates.filter(dateString => {
+    let currentDate = parseDate(dateString);
+    return currentDate >= thresholdDate;
+  });
+}
+
+let dates = getDaysFromDate('2024-10-18', 10);
+dates = removeDatesBefore(dates, '2024-10-24');
+console.log(dates);
+
+module.exports = { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore };
