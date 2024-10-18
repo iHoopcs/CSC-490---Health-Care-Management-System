@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { formatDate, getDaysFromDate, getDayOfWeek } from '../../../utility/dateUtils';
 
 import { faDumbbell } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,10 +11,15 @@ export const WorkoutPlan = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [instructions, setInstructions] = useState('click an exercise');
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+
     const userEmail = localStorage.getItem('userEmail');
     generatePlans(userEmail);
+
+    hasFetched.current = true;
   }, []);
 
   const shuffleArray = (array) => {
@@ -45,41 +51,47 @@ export const WorkoutPlan = () => {
   }
 
   const generatePlans = async (userEmail) => {
-    const response = await axios.post('http://localhost:8080/api/workout/plan', { userEmail });
-    const allExercises = response.data.exercises;
+    await axios.post('http://localhost:8080/api/workout/updatePlan', { userEmail });
+    let newPlans = [];
 
-    const days = await checkAvalibleDays(userEmail);
+    const currentRawDate = new Date();
+    const currentDate = formatDate(currentRawDate);
+    let futureDates = getDaysFromDate(currentDate, 7);
 
-    const newPlans = days.map(day => {
-      const plan = { day, exercises: shuffleArray([...allExercises]) };
-      return plan;
-    });
+    for (let i = 0; i < futureDates.length; i++) {
+      try {
+
+        let workout = await axios.post('http://localhost:8080/api/workout/findWorkout',
+          { userEmail: userEmail, date: futureDates[i] });
+
+        if (workout != null) {
+          newPlans.push(workout);
+        }
+      }
+      catch (err) {
+        console.error('Error fetching workout on date:', err);
+      }
+    }
 
     setPlans(newPlans);
     setLoading(false); // All plans have been generated
   };
 
-  const AcceptPlan = async () => {
-    const userEmail = localStorage.getItem('userEmail');
-
-    //generate plans for the next month
-    await axios.post('http://localhost:8080/api/workout/updatePlan', { userEmail: userEmail })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(`Error: ${error}`);
-      });
-
-    window.location.href = '/dashboard'
+  const regeneratePlans = async (userEmail) => {
+    setLoading(true);
+    setPlans([]);
+    await axios.post('http://localhost:8080/api/workout/deletePlans', { userEmail: userEmail });
+    await generatePlans(userEmail);
   }
 
-
+  const AcceptPlan = async () => {
+    window.location.href = '/dashboard'
+  }
 
   return (
     <Container>
       <div className="d-flex justify-content-between mt-3 mb-4">
-        <button onClick={() => generatePlans(localStorage.getItem('userEmail'))} type="button" className="btn btn-success">Regenerate</button>
+        <button onClick={() => regeneratePlans(localStorage.getItem('userEmail'))} type="button" className="btn btn-success">Regenerate</button>
         <button onClick={AcceptPlan} type="button" className="btn btn-success">Accept Plan</button>
       </div>
       {
@@ -96,7 +108,7 @@ export const WorkoutPlan = () => {
           <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
             {plans.map((plan, index) => (
               <div key={index} className="pb-2 mb-3 border-bottom">
-                <h1 className="text-center">{plan.day}</h1>
+                <h1 className="text-center">{getDayOfWeek(plan.data.date)}</h1>
                 <table className="table table-striped table-hover">
                   <thead>
                     <tr>
@@ -109,7 +121,7 @@ export const WorkoutPlan = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {plan.exercises.map((exercise, i) => (
+                    {plan.data.exercises.map((exercise, i) => (
                       <tr
                         key={i}
                         onClick={() => setInstructions(exercise.instructions)}

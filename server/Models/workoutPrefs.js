@@ -8,6 +8,7 @@ const workoutPrefs = new Schema({
   healthIssues: [String],
   gymAccess: Boolean,
   homeEquipment: [String],
+  dateCreated: String,
 });
 
 const Workout = mongoose.model('workoutPrefs', workoutPrefs);

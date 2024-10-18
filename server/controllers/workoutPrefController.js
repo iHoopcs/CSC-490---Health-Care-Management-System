@@ -1,5 +1,7 @@
 const User = require('../Models/user.js');
 const WorkoutPrefs = require('../Models/workoutPrefs.js');
+const { formatDate } = require('../utility/dateUtils.js');
+
 
 const createWorkoutPreferences = async (req, res) => {
   const {
@@ -10,6 +12,9 @@ const createWorkoutPreferences = async (req, res) => {
     gymAccess,
     homeEquipment,
   } = req.body;
+
+  const date = new Date();
+  const dateCreated = formatDate(date);
 
   User.findOne({
     email: userEmail
@@ -25,6 +30,7 @@ const createWorkoutPreferences = async (req, res) => {
             healthIssues: healthIssues,
             gymAccess: gymAccess,
             homeEquipment: homeEquipment,
+            dateCreated: dateCreated
           },
           { new: true, upsert: true }
         );
