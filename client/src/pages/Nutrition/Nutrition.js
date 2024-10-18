@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import { SideBar } from '../../components/dashboard-sidebar/SideBar';
@@ -9,6 +9,7 @@ export const Nutrition = () => {
   const [todaysPlan, setTodaysPlan] = useState('');
   const [userNutritionPlan, setUserNutritionPlan] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const hasFetched = useRef(false);
 
   const weightLossInfo = `You're current plan is the weight loss plan. This
     plan creates a meal plan consisting foods such as fruit, lean meats, and
@@ -26,7 +27,10 @@ export const Nutrition = () => {
       muscleBuildingInfo;
 
   useEffect(() => {
+    if (hasFetched.current) return;
+
     const fetchTodaysPlan = async () => {
+      console.log('fetching plan');
       const plan = await getTodaysMealPlan();
       setTodaysPlan(plan);
       const userPlan = await getUserNutritionPlan();
@@ -35,6 +39,7 @@ export const Nutrition = () => {
     };
 
     fetchTodaysPlan();
+    hasFetched.current = true;
   }, []);
 
   const getFoodItem = async () => {
