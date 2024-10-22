@@ -1,12 +1,23 @@
 const oAuthGen = require('../utility/oAuthGen');
-const User = require('../Models/user.js');
 const MealPlan = require('../Models/mealPlan.js');
 const WorkoutPrefs = require('../Models/workoutPrefs.js');
 const { getUnique, getRandomElements } = require('../utility/arrayUtils.js');
 const { formatDate, parseDate, getDaysFromDate } = require('../utility/dateUtils.js');
 
-const weight_loss_terms = ['leafy greens', 'fish', 'chicken breast',
-  'lean meat', 'beans', 'soups', 'fruit'];
+const muscle_gain_breakfasts_terms = ['eggs', 'yougurt', 'protien smoothie'];
+const muscle_gain_lunches_terms = ['grilled fish', 'shrimp', 'spinach'];
+const muscle_gain_dinners_terms = ['chicken breast', 'steak', 'turkey'];
+const muscle_gain_snacks_terms = ['nuts', 'hummus', 'peanut butter sandwich'];
+
+const weight_loss_breakfasts_terms = ['fruit', 'smoothie', 'fruit salad'];
+const weight_loss_lunches_terms = ['grilled chicken salad', 'quinoa bowl', 'vegetable soup'];
+const weight_loss_dinners_terms = ['baked salmon', 'steamed vegetables', 'lentil stew'];
+const weight_loss_snacks_terms = ['carrot sticks', 'apple slices', 'rice cakes'];
+
+const casual_breakfasts_terms = ['pancakes', 'eggs', 'toast'];
+const casual_lunches_terms = ['sandwich', 'burger', 'chicken'];
+const casual_dinners_terms = ['pasta', 'tacos', 'stir-fry'];
+const casual_snacks_terms = ['meal bar', 'cookies', 'popcorn'];
 
 async function findFoods(searchTerms, amount) {
   const foodSearch = {
@@ -27,7 +38,9 @@ async function findFoods(searchTerms, amount) {
 
     const data = await response.json()
 
-    return data.foods.food;
+    foods = getUnique(data.foods.food);
+    foods = getRandomElements(foods);
+    return foods;
   }
   catch (error) {
     console.error(`Error fetching foods: ${error}`);
@@ -127,81 +140,84 @@ const generateWeekPlan = async (req, res) => {
 
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
       'Friday', 'Saturday', 'Sunday']
-    let foods = [];
+
+    let breakfast_terms, lunch_terms, dinner_terms, snack_terms;
+    let breakfasts = [], lunches = [], dinners = [], snacks = [];
+
     let foodDayPlans = [];
-    const maxFoodsPerDay = 5;
 
-    let maxCaloriesPerDay = 2000;
-
-    if (nutritionPlan == 'weight-loss') {
-      maxCaloriesPerDay = 1500;
+    switch (nutritionPlan) {
+      case 'weight-loss':
+        breakfast_terms = weight_loss_breakfasts_terms;
+        lunch_terms = weight_loss_lunches_terms;
+        dinner_terms = weight_loss_dinners_terms;
+        snack_terms = weight_loss_snacks_terms;
+        break;
+      case 'build-muscle':
+        breakfast_terms = muscle_gain_breakfasts_terms;
+        lunch_terms = muscle_gain_lunches_terms;
+        dinner_terms = muscle_gain_dinners_terms;
+        snack_terms = muscle_gain_snacks_terms;
+        break;
+      case 'casual':
+        breakfast_terms = casual_breakfasts_terms;
+        lunch_terms = casual_lunches_terms;
+        dinner_terms = casual_dinners_terms;
+        snack_terms = casual_snacks_terms;
+        break;
+      default:
+        throw new Error('Unknown nutrition plan');
     }
-    else if (nutritionPlan == 'muscle-building') {
-      maxCaloriesPerDay = 2400;
+    console.log("weight-loss breakfast terms: " + breakfast_terms.length);
+
+    //find foods for each meal of the day
+    for (let i = 0; i < breakfast_terms.length; i++) {
+      if (i < breakfast_terms.length) {
+        let nextBreakfasts = await findFoods(breakfast_terms[i], 5);
+        nextBreakfasts = nextBreakfasts.map(food => formatFood(food, nutritionPlan));
+        breakfasts.push(...nextBreakfasts);
+      }
+      if (i < lunch_terms.length) {
+        let nextLunches = await findFoods(lunch_terms[i], 5);
+        nextLunches = nextLunches.map(food => formatFood(food, nutritionPlan));
+        lunches.push(...nextLunches);
+      }
+      if (i < dinner_terms.length) {
+        let nextDinners = await findFoods(dinner_terms[i], 5);
+        nextDinners = nextDinners.map(food => formatFood(food, nutritionPlan));
+        dinners.push(...nextDinners);
+      }
+      if (i < snack_terms.length) {
+        let nextSnacks = await findFoods(snack_terms[i], 5);
+        nextSnacks = nextSnacks.map(food => formatFood(food, nutritionPlan));
+        snacks.push(...nextSnacks);
+      }
+
+      if (nutritionPlan == 'weight-loss') {
+        breakfasts = removeFoodsOverCalorieLimit(750, breakfasts);
+        lunches = removeFoodsOverCalorieLimit(750, lunches);
+        dinners = removeFoodsOverCalorieLimit(750, dinners);
+        snacks = removeFoodsOverCalorieLimit(750, snacks);
+      } else if (nutritionPlan == 'build-muscle') {
+        breakfasts = removeFoodsOverCalorieLimit(1100, breakfasts);
+        lunches = removeFoodsOverCalorieLimit(1100, lunches);
+        dinners = removeFoodsOverCalorieLimit(1100, dinners);
+        snacks = removeFoodsOverCalorieLimit(1100, snacks);
+      } else {
+        breakfasts = removeFoodsOverCalorieLimit(1000, breakfasts);
+        lunches = removeFoodsOverCalorieLimit(1000, lunches);
+        dinners = removeFoodsOverCalorieLimit(1000, dinners);
+        snacks = removeFoodsOverCalorieLimit(1000, snacks);
+      }
     }
-
-    for (let i = 0; i < 7; i++) {
-      const newFoods = await findFoods(weight_loss_terms[i], maxFoodsPerDay);
-      foods = foods.concat(newFoods);
-    }
-
-    foods = getUnique(foods);
-    foods = getRandomElements(foods);
-
 
     for (let i = 0; i < days.length; i++) {
-      let totalCalories = 0;
       let dailyFoods = [];
 
-      for (let j = i * maxFoodsPerDay; j < (i + 1) * maxFoodsPerDay; j++) {
-        if (j >= foods.length || foods[j] == null || foods[j].food_description == null) {
-          continue;
-        }
-
-        const description = foods[j].food_description;
-
-        let caloriesMatch = description.match(/Calories:\s*(\d+)kcal/);
-        let proteinMatch = description.match(/Protein:\s*([\d.]+)g/);
-        let carbsMatch = description.match(/Carbs:\s*([\d.]+)g/);
-        let fatMatch = description.match(/Fat:\s*([\d.]+)g/);
-
-        let calories = caloriesMatch ? parseInt(caloriesMatch[1]) : 0;
-        let protein = proteinMatch ? parseFloat(proteinMatch[1]) : 0.0;
-        let carbs = carbsMatch ? parseFloat(carbsMatch[1]) : 0.0;
-        let fat = fatMatch ? parseFloat(fatMatch[1]) : 0.0;
-
-        let proteinDailyValue = (protein / 50 * 100).toFixed(2);
-        let carbsDailyValue = (carbs / 275 * 100).toFixed(2);
-        let fatDailyValue = (fat / 75 * 100).toFixed(2);
-
-        let servings = 1;
-
-        if (calories > 1080) {
-          continue;
-        }
-
-        while (calories * servings < 360) {
-          servings++;
-        }
-
-        let nextFood = {
-          name: foods[j].food_name,
-          calories: calories,
-          servings: servings,
-          proteinDv: proteinDailyValue,
-          carbsDv: carbsDailyValue,
-          fatDv: fatDailyValue
-        }
-
-        console.log(nextFood);
-        console.log(calories);
-        console.log(totalCalories);
-
-        if (totalCalories + calories <= maxCaloriesPerDay) {
-          totalCalories += calories;
-          dailyFoods.push(nextFood);
-        }
-      }
+      dailyFoods.push(breakfasts.pop());
+      dailyFoods.push(lunches.pop());
+      dailyFoods.push(dinners.pop());
+      dailyFoods.push(snacks.pop());
 
       foodDayPlans.push({
         day: days[i],
@@ -216,6 +232,63 @@ const generateWeekPlan = async (req, res) => {
     return null;
   }
 }
+
+const formatFood = (food, nutritionPlan) => {
+  if (!food || !food.food_description) {
+    console.log('no food description found');
+    return null;
+  }
+
+  const description = food.food_description;
+
+  let caloriesMatch = description.match(/Calories:\s*(\d+)kcal/);
+  let proteinMatch = description.match(/Protein:\s*([\d.]+)g/);
+  let carbsMatch = description.match(/Carbs:\s*([\d.]+)g/);
+  let fatMatch = description.match(/Fat:\s*([\d.]+)g/);
+
+  let calories = caloriesMatch ? parseInt(caloriesMatch[1]) : 0;
+  let protein = proteinMatch ? parseFloat(proteinMatch[1]) : 0.0;
+  let carbs = carbsMatch ? parseFloat(carbsMatch[1]) : 0.0;
+  let fat = fatMatch ? parseFloat(fatMatch[1]) : 0.0;
+
+  let proteinDailyValue = (protein / 50 * 100).toFixed(2);
+  let carbsDailyValue = (carbs / 275 * 100).toFixed(2);
+  let fatDailyValue = (fat / 75 * 100).toFixed(2);
+
+  let servings = 1;
+
+  console.log("nutrition plan: " + nutritionPlan);
+
+  if (nutritionPlan == 'build-muscle') {
+    while (calories * servings < 600) {
+      servings++;
+    }
+  }
+  else if (nutritionPlan == 'weight-loss') {
+    while (calories * servings < 290) {
+      servings++;
+    }
+  }
+  else {
+    while (calories * servings < 480) {
+      servings++;
+    }
+  }
+
+  return {
+    name: food.food_name,
+    calories: calories,
+    servings: servings,
+    proteinDv: proteinDailyValue,
+    carbsDv: carbsDailyValue,
+    fatDv: fatDailyValue
+  };
+};
+
+const removeFoodsOverCalorieLimit = (calorieLimit, formattedFoods) => {
+  return formattedFoods.filter(food => food.calories <= calorieLimit);
+};
+
 
 module.exports = {
   searchFood: searchFood,

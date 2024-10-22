@@ -13,18 +13,20 @@ export const Nutrition = () => {
 
   const weightLossInfo = `You're current plan is the weight loss plan. This
     plan creates a meal plan consisting foods such as fruit, lean meats, and
-    leafy greens. The calorie range is between 1200-1500 calories per day.`
+    leafy greens. The calorie range is between 1100-1500 calories per day.`
 
   const casualInfo = `You're current plan is the casual plan. This plan consists
-    of a variety of foods. The calorie range is between 1600-2000 calories per day.`;
+    of a variety of foods. The calorie range is between 1600-2100 calories per day.`;
 
   const muscleBuildingInfo = `You're current plan is the muscle building plan. This
     plan consists of high protien foods including lean meats, nuts, eggs, and
-    protien shakes. The calorie range is between 2000-2500 calories per day.`;
+    protien shakes. The calorie range is between 2150-2800 calories per day.`;
 
   const planInfo = userNutritionPlan === 'weight-loss' ? weightLossInfo :
     userNutritionPlan === 'casual' ? casualInfo :
       muscleBuildingInfo;
+
+  const mealNames = ["Breakfast", "Lunch", "Dinner"];
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -111,8 +113,9 @@ export const Nutrition = () => {
               <table className="table table-striped table-hover">
                 <thead>
                   <tr>
+                    <th>Meal</th>
                     <th>Food</th>
-                    <th>Calories</th>
+                    <th>Total Calories</th>
                     <th>Servings</th>
                     <th>Protien dv%</th>
                     <th>Carbs dv%</th>
@@ -120,11 +123,13 @@ export const Nutrition = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food) => {
+                  {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food, index) => {
+                    const mealName = index < 3 ? mealNames[index] : "Snack";
                     return (
                       <tr key={food.id}>
+                        <td>{mealName}</td>
                         <td className="col-5">{food.name}</td>
-                        <td>{food.calories}</td>
+                        <td>{food.calories * food.servings}</td>
                         <td>{food.servings}</td>
                         <td>{food.proteinDv + "%"}</td>
                         <td>{food.carbsDv + "%"}</td>
