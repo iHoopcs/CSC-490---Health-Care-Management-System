@@ -65,36 +65,37 @@ const questionsAndAnswers = [
 ]
 
 export const LearningGame = (props) => {
-  const [quizMenuIsVisible, setQuizMenuIsVisible] = useState(false); 
-  const [quizGameIsVisible, setQuizGameIsVisible] = useState(false); 
+  const [quizMenuIsVisible, setQuizMenuIsVisible] = useState(false); //explains game
+  const [quizGameIsVisible, setQuizGameIsVisible] = useState(false); //actual game
+  const [quizResultsVisible, setQuizResultsVisible] = useState(false); //game results
   const [currentQuizGameQuestionIndex, setCurrentQuizGameIndex] = useState(0); 
+  const [userAnswers, setUserAnswers] = useState(new Map()); 
+  const [quizScore, setQuizScore] = useState(null); 
 
-  //test knowledge modal controls
-  const displayQuizMenu = () => {
-    setQuizMenuIsVisible(true) //display test knowledge game INFO modal
-  }
-  const handleNoTestKnowledgeModal = () => {
-    setQuizMenuIsVisible(false)
-  }
-  const displayTestKnowledgeGame = () => {
-    setQuizGameIsVisible(true) //display test knowledge GAME
-    setQuizMenuIsVisible(false)
-  }
-
-  const nextQuizGameQuestion = () => { 
-    setCurrentQuizGameIndex((prevIndex) => prevIndex+1)
-  }
-  const previousQuizGameQuestion = () => {
-    setCurrentQuizGameIndex((prevIndex) => prevIndex-1)
+  const storeUserInputAnswer = (key, value) => {
+    setUserAnswers(prev => new Map(prev).set(key, value)) //store user selected answers - key value pair for verification
   }
   
   const submitQuiz = () => {
-    //calculate score
-    //save and display score
+    let totalScore = 0; 
 
+    //calculate score
+    for (let i = 0; i < questionsAndAnswers.length; i++){
+      //compare user answer to correct answer - +1 if correct
+      if (userAnswers.get(i) == questionsAndAnswers[i].answer){
+        totalScore+=1;
+      }
+    }
+    setQuizScore(totalScore)
+
+    //reset quiz
+    setCurrentQuizGameIndex(0)
+    userAnswers.clear(); 
+    
     setQuizGameIsVisible(false)
+    setQuizResultsVisible(true)
   }
-  
+  console.log(userAnswers)
   return (
     <>
       <div className='container-fluid'>
@@ -110,10 +111,10 @@ export const LearningGame = (props) => {
                   style={{
                     backgroundImage:`url('https://images.wakelet.com/resize?id=t4_tr3NIzXzG1VD4Bnu6H&h=2880&w=3840&q=85')`,
                     }}
-                  onClick={displayQuizMenu}
+                  onClick={() => setQuizMenuIsVisible(true)}
                 >
                 </div>
-                {/*Test Knowledge Info Modal*/}
+                {/*Game Menu*/}
                 <Modal {...props} size="xl" aria-labelledby="contained-modal-title-vcenter" centered show={quizMenuIsVisible} >
                   <Modal.Header>
                       <Modal.Title id="contained-modal-title-vcenter" className='w-100 text-center'>
@@ -141,17 +142,23 @@ export const LearningGame = (props) => {
                   <Modal.Footer>
                       <Row className='w-100 justify-content-around'>
                           <Col>
-                              <Button onClick={handleNoTestKnowledgeModal} className='w-100'>No</Button>
+                              <Button onClick={() => setQuizMenuIsVisible(false)} className='w-100'>No</Button>
                           </Col>
 
                           <Col>
-                              <Button onClick={displayTestKnowledgeGame} className='w-100'>Let's play!</Button>
+                              <Button onClick={() => {
+                                setQuizMenuIsVisible(false) 
+                                setQuizGameIsVisible(true)}} 
+                                className='w-100'
+                              >
+                                Let's play!
+                              </Button>
                           </Col>
                       </Row>
                   </Modal.Footer>
               </Modal>
               
-              {/*Test Knowledge Game*/}
+              {/*Game*/}
               <Modal {...props} size="xl" aria-labelledby="contained-modal-title-vcenter" centered show={quizGameIsVisible}>
                   <Modal.Header>
                       <Modal.Title id="contained-modal-title-vcenter" className='w-100 text-center'>
@@ -171,7 +178,12 @@ export const LearningGame = (props) => {
                                 <>
                                   <Row key={index} className='mb-3 p-2 w-100'>
                                     <div className='text-center'>
-                                      <button className='btn btn-outline-secondary quiz-btn p-3 w-100'><span className='fs-5'>{item}</span></button>
+                                      <button className='btn btn-outline-secondary quiz-btn p-3 w-100'
+                                        value={item}
+                                        onClick={(e) => storeUserInputAnswer(currentQuizGameQuestionIndex, e.currentTarget.value)}
+                                      >
+                                        <span className='fs-5'>{item}</span>
+                                      </button>
                                     </div>
                                   </Row>
                                 </>
@@ -187,7 +199,7 @@ export const LearningGame = (props) => {
                                 <Button disabled className='w-100'>Previous</Button>
                               </Col>
                             : <Col>
-                                <Button onClick={previousQuizGameQuestion} className='w-100'>Previous</Button>
+                                <Button onClick={() => setCurrentQuizGameIndex((prevIndex) => prevIndex-1)} className='w-100'>Previous</Button>
                               </Col>
                         }
                         {
@@ -197,9 +209,44 @@ export const LearningGame = (props) => {
                               </Col>
                             : 
                               <Col>
-                                <Button onClick={nextQuizGameQuestion} className='w-100'>Next</Button>
+                                <Button onClick={() => setCurrentQuizGameIndex((prevIndex) => prevIndex+1)} className='w-100'>Next</Button>
                               </Col>
                         }
+                      </Row>
+                  </Modal.Footer>
+              </Modal>
+
+              {/*Game Results*/}
+              <Modal {...props} size="xl" aria-labelledby="contained-modal-title-vcenter" centered show={quizResultsVisible} >
+                  <Modal.Header>
+                      <Modal.Title id="contained-modal-title-vcenter" className='w-100 text-center'>
+                        <span>*Quiz Results*</span>
+                      </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body className='p-4 text-center'>
+                    {
+                      quizScore >= 7 
+                      ? 
+                      <>
+                        <h5 className='mb-4'>{Math.round((quizScore / 11) * 100)}% </h5>
+                        <span className='fs-4'>You scored a {quizScore} / 11!</span>
+                        <span className='fs-4 d-block'>Awesome, you passed!</span>
+                        <span className='fs-4 d-block'>Well Done!</span>
+                        <span className='fs-4 d-block'>You have shown that you truly understand the basics of nutrition and health.</span>
+                      </>
+                      : 
+                      <>
+                        <h5 className='mb-4'>{(quizScore / 11) * 100}% </h5>
+                        <span className='fs-4'>You scored a {quizScore} / 11!</span>
+                        <span className='fs-4 d-block'>Unfortunately, you did not pass the quiz.</span>
+                        <span className='fs-4 d-block'>Although you did not pass this time, you can always try again!</span>
+                        <span className='fs-4 d-block'>Remember that you can refer to the /learning page for review</span>
+                      </>
+                    }
+                  </Modal.Body>
+                  <Modal.Footer>
+                      <Row className='w-100 justify-content-around'>
+                        <Button onClick={() => setQuizResultsVisible(false)} className='w-100'>Close</Button>
                       </Row>
                   </Modal.Footer>
               </Modal>
@@ -215,7 +262,7 @@ export const LearningGame = (props) => {
                 </div>
                 {/*Vocab Game Modal*/}
 
-              </div>
+              </div>1
             </div>
           </div>
         </div>
