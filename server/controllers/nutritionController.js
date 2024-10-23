@@ -281,7 +281,8 @@ const formatFood = (food, nutritionPlan) => {
     servings: servings,
     proteinDv: proteinDailyValue,
     carbsDv: carbsDailyValue,
-    fatDv: fatDailyValue
+    fatDv: fatDailyValue,
+    link: food.food_url
   };
 };
 
