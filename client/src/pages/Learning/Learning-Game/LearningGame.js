@@ -71,6 +71,7 @@ export const LearningGame = (props) => {
   const [currentQuizGameQuestionIndex, setCurrentQuizGameIndex] = useState(0); 
   const [userAnswers, setUserAnswers] = useState(new Map()); 
   const [quizScore, setQuizScore] = useState(null); 
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
 
   const storeUserInputAnswer = (key, value) => {
     setUserAnswers(prev => new Map(prev).set(key, value)) //store user selected answers - key value pair for verification
@@ -174,13 +175,17 @@ export const LearningGame = (props) => {
                           {
                             //display each choice as a clickable button
                             questionsAndAnswers[currentQuizGameQuestionIndex].choices.map((item, index) => {
+                              const isSelected = selectedAnswer === item; // Check if this item is selected
                               return (
                                 <>
                                   <Row key={index} className='mb-3 p-2 w-100'>
                                     <div className='text-center'>
-                                      <button className='btn btn-outline-secondary quiz-btn p-3 w-100'
+                                      <button className={`btn ${isSelected ? 'btn-secondary' : 'btn-outline-secondary'} quiz-btn p-3 w-100`}
                                         value={item}
-                                        onClick={(e) => storeUserInputAnswer(currentQuizGameQuestionIndex, e.currentTarget.value)}
+                                        onClick={(e) => {
+                                          storeUserInputAnswer(currentQuizGameQuestionIndex, e.currentTarget.value)
+                                          setSelectedAnswer(item)
+                                        }}
                                       >
                                         <span className='fs-5'>{item}</span>
                                       </button>
@@ -212,6 +217,7 @@ export const LearningGame = (props) => {
                                 <Button onClick={() => setCurrentQuizGameIndex((prevIndex) => prevIndex+1)} className='w-100'>Next</Button>
                               </Col>
                         }
+                        
                       </Row>
                   </Modal.Footer>
               </Modal>
