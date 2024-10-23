@@ -13,3 +13,54 @@
 .workout-event {
   transition: background-color 0.3s, color 0.3s;
 }
+
+/* Make the modal wider and taller */
+.modal-dialog {
+  max-width: 80vw; /* Adjust width as needed */
+  max-height: 80vh; /* Adjust height as needed */
+}
+
+/* Ensure the modal content scrolls if it exceeds the available space */
+.modal-body {
+  overflow-y: auto;
+  max-height: 60vh; /* Limit the modal body height */
+  white-space: pre-wrap; /* Preserve line breaks in text */
+  font-size: 1rem; /* Adjust text size if necessary */
+}
+
+/* Adjust font size and spacing for clearer layout */
+.modal-title {
+  font-size: 1.5rem; /* Increase title font size */
+}
+
+.modal-body p {
+  font-size: 1.1rem; /* Increase text size for better readability */
+}
+
+
+/* Increase the size of each day cell */
+.fc-daygrid-day {
+  height: 140px; /* Adjust this value for taller cells */
+  min-width: 100px; /* Adjust this value for wider cells */
+}
+
+/* Optional: Adjust the font size or padding for better visibility */
+.fc-daygrid-day-number {
+  font-size: 1.5rem; /* Increase the font size of the day numbers */
+  padding: 10px; /* Add some padding */
+}
+
+/* Optional: Increase the overall calendar font size */
+.fc {
+  font-size: 1.4rem; /* Adjust the overall font size of the calendar */
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full screen height */
+}
+
+
+

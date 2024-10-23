@@ -1,26 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal, Button } from 'react-bootstrap';
 import './Calendar.css';
-import { Modal, Button } from 'react-bootstrap'; // Import Bootstrap modal
 
-// Helper function to check available workout days
+// Helper function to check available workout days for a user
 const checkAvailableDays = async (email) => {
   try {
     const response = await axios.get('http://localhost:8080/api/workout/userPreferences', {
       params: { userEmail: email },
     });
-    let days = response.data.workoutSchedule;
-    return days;
+    return response.data.workoutSchedule;
   } catch (error) {
     console.error('Error fetching available days:', error);
     return [];
   }
 };
 
-// Helper function to format date to 'YYYY-MM-DD'
+// Helper function to format a JavaScript Date object to 'YYYY-MM-DD'
 const formatDateToYYYYMMDD = (date) => {
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -28,28 +27,48 @@ const formatDateToYYYYMMDD = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-export function Calendar() {
-  const [planName, setPlanName] = useState('');
+// Modal component for workout and meal details
+const WorkoutModal = ({ show, onHide, selectedEvent, onComplete, isCompleted }) => (
+  <Modal show={show} onHide={onHide}>
+    <Modal.Header closeButton>
+      <Modal.Title>{selectedEvent ? selectedEvent.title : ''}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <p>{selectedEvent ? selectedEvent.extendedProps.workoutDetails : ''}</p>
+      <p>{selectedEvent ? selectedEvent.extendedProps.mealDetails : ''}</p>
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="primary" onClick={onComplete} disabled={isCompleted}>
+        Mark as Completed
+      </Button>
+      <Button variant="secondary" onClick={onHide}>
+        Close
+      </Button>
+    </Modal.Footer>
+  </Modal>
+);
+
+export const Calendar = React.memo(() => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null); // Store selected event details
-  const [isCompleted, setIsCompleted] = useState(false); // Track if the workout is completed
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isCompleted, setIsCompleted] = useState(false);
   const calendarRef = useRef(null);
 
-  // Fetch and add workout events based on available days
-  const fetchAndAddWorkoutForDateRange = async (startDate, endDate) => {
-    try {
-      const userEmail = localStorage.getItem('userEmail');
-      const availableDays = await checkAvailableDays(userEmail);
+  // Fetch and add workout and meal events based on available days
+  const fetchAndAddEvents = async (startDate, endDate) => {
+    const userEmail = localStorage.getItem('userEmail');
+    const availableDays = await checkAvailableDays(userEmail);
 
-      let currentDay = new Date(startDate);
-      currentDay.setHours(0, 0, 0, 0); // Set time to midnight for consistency
+    let currentDay = new Date(startDate);
+    currentDay.setHours(0, 0, 0, 0); // Set time to midnight for consistency
 
-      while (currentDay <= endDate) {
-        const dayOfWeek = getDayName(currentDay);
+    while (currentDay <= endDate) {
+      const dayOfWeek = getDayName(currentDay);
+      const formattedDate = formatDateToYYYYMMDD(currentDay);
 
-        if (availableDays.includes(dayOfWeek.toLowerCase())) {
-          const formattedDate = formatDateToYYYYMMDD(currentDay);
-
+      // Fetch and add workout events
+      if (availableDays.includes(dayOfWeek.toLowerCase())) {
+        try {
           const response = await axios.post('http://localhost:8080/api/workout/findWorkout', {
             userEmail: userEmail,
             date: formattedDate,
@@ -58,150 +77,154 @@ export function Calendar() {
           const { data } = response;
           const workoutPlan = data.plan;
           const exercises = data.exercises || [];
-
-          setPlanName(workoutPlan);
+          const isCompleted = data.completion; // Get completion status
 
           const exerciseDescriptions = exercises
             .map((exercise) => `- ${exercise.name} (${exercise.muscle}, ${exercise.type})`)
             .join('\n');
 
-          if (calendarRef.current) {
-            const calendarApi = calendarRef.current.getApi();
-
-            const existingEvent = calendarApi.getEventById(formattedDate);
-            if (!existingEvent) {
-              calendarApi.addEvent({
-                id: formattedDate,
-                title: workoutPlan,
-                start: formattedDate,
-                description: `Scheduled workout day\nExercises:\n${exerciseDescriptions}`,
-                extendedProps: {
-                  workoutDetails: exerciseDescriptions,
-                  completed: false,
-                },
-                classNames: ['workout-event'],
-              });
-            }
+          const calendarApi = calendarRef.current.getApi();
+          if (!calendarApi.getEventById(formattedDate)) {
+            calendarApi.addEvent({
+              id: formattedDate,
+              title: `${isCompleted ? '✅ ' : ''}${workoutPlan}`,
+              start: formattedDate,
+              extendedProps: {
+                workoutDetails: exerciseDescriptions,
+                completed: isCompleted,
+              },
+              classNames: ['workout-event'],
+            });
           }
+        } catch (error) {
+          console.error('Error fetching workout plan:', error);
         }
-
-        currentDay.setDate(currentDay.getDate() + 1);
       }
-    } catch (error) {
-      console.error('Error fetching workout plan:', error.response ? error.response.data : error.message);
-    }
-  };
 
-  // Fetch and add meal events for the date range
-  const fetchAndAddMealForDateRange = async (startDate, endDate) => {
-    const userEmail = localStorage.getItem('userEmail');
-    let currentDay = new Date(startDate);
-    currentDay.setHours(0, 0, 0, 0); 
-
-    while (currentDay <= endDate) {
-      const formattedDate = formatDateToYYYYMMDD(currentDay); 
-
+      // Fetch and add meal events
       try {
-        const response = await axios.post('http://localhost:8080/api/food/FindMeal', {
+        const mealResponse = await axios.post('http://localhost:8080/api/food/findMeal', {
           userEmail: userEmail,
-          date: formattedDate
-        },{
-          timeout: 10000//Set timeout to 10 secs
+          date: formattedDate,
         });
 
-        if (response.data.foods && response.data.foods.length > 0) {
-          console.log(response.data.foods[0].food_name);
-        } else {
-          console.log("No foods found for the given date.");
-        }
-        
+        const meals = mealResponse.data.foods || [];
+        const mealIsCompleted = mealResponse.data.completion;
 
-        const meals = response.data.foods || [];
         if (meals.length > 0) {
-          if (calendarRef.current) {
-            const calendarApi = calendarRef.current.getApi();
+          const mealDescriptions = meals
+            .map(meal => `Meal: ${meal.food_name}\nCalories: ${meal.calories || 'N/A'}\nServings: ${meal.servings}\nProtein: ${meal.proteinDv}\nCarbs: ${meal.carbsDv}\nFats: ${meal.fatDv}`)
+            .join('\n\n');
 
-            const mealDescriptions = meals.map(meal => `- ${meal.food_name}`).join('\n');
-
-            const existingEvent = calendarApi.getEventById(`meal-${formattedDate}`);
-            if (!existingEvent) {
-              calendarApi.addEvent({
-                id: `meal-${formattedDate}`,
-                title: `Meal Plan`,
-                start: formattedDate,
-                description: `Meals for the day:\n${mealDescriptions}`,
-                extendedProps: {
-                  mealDetails: mealDescriptions,
-                  completed: false,
-                },
-                classNames: ['meal-event'],
-              });
-            }
+          const calendarApi = calendarRef.current.getApi();
+          if (!calendarApi.getEventById(`meal-${formattedDate}`)) {
+            calendarApi.addEvent({
+              id: `meal-${formattedDate}`,
+              title: `${mealIsCompleted ? '✅ ' : ''}Meal Plan`,
+              start: formattedDate,
+              extendedProps: {
+                mealDetails: mealDescriptions,
+                completed: mealIsCompleted,
+              },
+              classNames: ['meal-event'],
+            });
           }
         }
-
-        currentDay.setDate(currentDay.getDate() + 1);
       } catch (error) {
         console.error(`Error fetching meal for ${formattedDate}:`, error);
       }
+
+      currentDay.setDate(currentDay.getDate() + 1); // Move to the next day
     }
   };
 
+  // Helper function to get the name of the day from a Date object
+  const getDayName = (date) => {
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    return dayNames[date.getUTCDay()];
+  };
+
+  // Initialize calendar and fetch events on component mount
   useEffect(() => {
     async function initializeCalendar() {
       const calendarApi = calendarRef.current?.getApi();
       if (calendarApi) {
         const view = calendarApi.view;
         const endDate = new Date(view.activeEnd);
-        await fetchAndAddWorkoutForDateRange(new Date(), endDate);
-        await fetchAndAddMealForDateRange(new Date(), endDate); 
+        await fetchAndAddEvents(new Date(), endDate);
       }
     }
 
     initializeCalendar();
   }, []);
 
-  // Handle event click to open modal
-  const handleEventClick = (clickInfo) => {
+  // Handle event click to open modal with event details
+  const handleEventClick = useCallback((clickInfo) => {
     setSelectedEvent(clickInfo.event);
     setIsCompleted(clickInfo.event.extendedProps.completed);
     setShowModal(true);
-  };
+  }, []);
 
-  // Mark event as completed
-  const handleCompleteEvent = () => {
+  // Mark event as completed (meal or workout)
+  const handleCompleteEvent = useCallback(async () => {
     if (selectedEvent) {
-      // Add a checkmark (✅) to the title to indicate completion
-      selectedEvent.setProp('title', `✅ ${selectedEvent.title}`);
+      const userEmail = localStorage.getItem('userEmail');
+      const eventDate = selectedEvent.startStr;
 
-      // Mark event as completed by adding a class and setting extended property
+      if (selectedEvent.id.startsWith('meal-')) {
+        await setMealComplete(userEmail, eventDate);
+      } else {
+        await setWorkoutComplete(userEmail, eventDate);
+      }
+
+      // Update event title and status
+      selectedEvent.setProp('title', `✅ ${selectedEvent.title}`);
       selectedEvent.setExtendedProp('completed', true);
       setIsCompleted(true);
       setShowModal(false);
     }
+  }, [selectedEvent]);
+
+  // Function to mark a meal as complete in the backend
+  const setMealComplete = async (userEmail, date) => {
+    try {
+      await axios.post('http://localhost:8080/api/food/setMealComplete', {
+        userEmail: userEmail,
+        date: date,
+      });
+      console.log('Meal marked as completed');
+    } catch (error) {
+      console.error('Error marking meal as completed:', error);
+    }
+  };
+
+  // Function to mark a workout as complete in the backend
+  const setWorkoutComplete = async (userEmail, date) => {
+    try {
+      await axios.post('http://localhost:8080/api/workout/setWorkoutComplete', {
+        userEmail: userEmail,
+        date: date,
+      });
+      console.log('Workout marked as completed');
+    } catch (error) {
+      console.error('Error marking workout as completed:', error);
+    }
   };
 
   // Custom rendering of events to show a checkmark for completed ones
-  const renderEventContent = (eventInfo) => {
-    return (
-      <div className="fc-event-content">
-        <span>{eventInfo.event.title}</span>
-      </div>
-    );
-  };
+  const renderEventContent = (eventInfo) => (
+    <div className="fc-event-content">
+      <span>{eventInfo.event.title}</span>
+    </div>
+  );
 
+  // Fetch new events when the visible date range changes
   const handleDatesSet = (arg) => {
     const { start, end } = arg;
 
     const calendarApi = calendarRef.current?.getApi();
-    calendarApi?.removeAllEvents();
-    fetchAndAddWorkoutForDateRange(start, end);
-    fetchAndAddMealForDateRange(start, end); 
-  };
-
-  const getDayName = (date) => {
-    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    return dayNames[date.getUTCDay()];
+    calendarApi?.removeAllEvents(); // Clear existing events
+    fetchAndAddEvents(start, end); // Fetch new events
   };
 
   return (
@@ -215,32 +238,18 @@ export function Calendar() {
           center: 'title',
           right: 'dayGridMonth,dayGridWeek,dayGridDay',
         }}
-        events={[]} 
-        datesSet={handleDatesSet}
-        eventClick={handleEventClick} 
+        events={[]} // No initial events
+        datesSet={handleDatesSet} // Callback for when dates change
+        eventClick={handleEventClick} // Callback for event clicks
         eventContent={renderEventContent} // Custom render event content
       />
-
-      {/* Modal for showing event details */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{selectedEvent?.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>{selectedEvent?.extendedProps.workoutDetails || selectedEvent?.extendedProps.mealDetails}</p>
-          <p>Status: {isCompleted ? 'Completed' : 'Not Completed'}</p>
-        </Modal.Body>
-        <Modal.Footer>
-          {!isCompleted && (
-            <Button variant="success" onClick={handleCompleteEvent}>
-              Mark as Completed
-            </Button>
-          )}
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <WorkoutModal 
+        show={showModal} 
+        onHide={() => setShowModal(false)} 
+        selectedEvent={selectedEvent} 
+        onComplete={handleCompleteEvent} 
+        isCompleted={isCompleted} 
+      />
     </div>
   );
-}
+});
