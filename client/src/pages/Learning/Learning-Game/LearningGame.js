@@ -257,18 +257,6 @@ export const LearningGame = (props) => {
                   </Modal.Footer>
               </Modal>
             </div>
-
-              <div className='col'>
-                <div className='card-style border shadow-lg p-4 rounded'
-                style={{
-                  backgroundImage: `url('https://www.mrpict.com/uploads/1/8/7/2/18722690/d7d96bb8-cf65-48cc-b93e-e9bbef63a960_1.png')`
-                }}
-                onClick={() => window.alert('TODO')}
-                >
-                </div>
-                {/*Vocab Game Modal*/}
-
-              </div>1
             </div>
           </div>
         </div>
