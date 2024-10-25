@@ -113,7 +113,7 @@ export const Calendar = React.memo(() => {
 
         if (meals.length > 0) {
           const mealDescriptions = meals
-            .map(meal => `Meal: ${meal.food_name}\nCalories: ${meal.calories || 'N/A'}\nServings: ${meal.servings}\nProtein: ${meal.proteinDv}\nCarbs: ${meal.carbsDv}\nFats: ${meal.fatDv}`)
+            .map(meal => `Meal: ${meal.name}\nCalories: ${meal.calories || 'N/A'}\nServings: ${meal.servings}\nProtein: ${meal.proteinDv}\nCarbs: ${meal.carbsDv}\nFats: ${meal.fatDv}`)
             .join('\n\n');
 
           const calendarApi = calendarRef.current.getApi();
