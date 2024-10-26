@@ -2,6 +2,8 @@ const Workout = require('../Models/workout.js');
 const WorkoutPrefs = require('../Models/workoutPrefs.js');
 const User = require('../Models/user.js');
 const exerciseController = require('../controllers/exerciseController');
+const { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore } = require('../utility/dateUtils.js');
+
 
 const exerciseTypes =
   ['cardio', 'strength', 'stretching', 'strongman', 'powerlifting',
@@ -15,93 +17,37 @@ const updateWorkoutMonth = async (req, res) => {
     const userEmail = String(req.body.userEmail);
     const planPrefs = await WorkoutPrefs.findOne({ userEmail: userEmail });
 
-    // get workouts from user model
-    const user = await User.findOne({ email: userEmail });
+    const currentRawDate = new Date();
+    const currentDate = formatDate(currentRawDate);
+    let futureDates = getDaysFromDate(currentDate, 30);
+    futureDates = filterDateDays(futureDates, planPrefs.workoutSchedule);
 
-    // try finding any workout from the past 30 days
-    let date30DaysAgo = new Date();
-    date30DaysAgo.setDate(date30DaysAgo.getDate() - 30);
-    let date30DaysAgoString = date30DaysAgo.toISOString().split('T')[0];
-    let workout = user.workouts.find(w => w.date >= date30DaysAgoString);
+    for (let i = 0; i < futureDates.length; i++) {
+      let workout = await Workout.findOne({ userEmail: userEmail, date: futureDates[i] });
 
-    //get next 29 days
-    let futureDates = [];
-    let currentDate = new Date();
+      if (!workout) {
+        let generatedWorkout = await generateWorkout(req, res);
+        let exercises = generatedWorkout.exercises;
 
-    for (let i = 1; i <= 29; i++) {
-      let futureDate = new Date(currentDate);
-      futureDate.setDate(currentDate.getDate() + i);
-
-      let dayName = days[futureDate.getDay()];
-      console.log(dayName);
-
-      //skip if the day is not in the users schedule
-      if (!planPrefs.workoutSchedule.includes(dayName)) {
-        continue;
-      }
-
-      let dateOnly = futureDate.toISOString().split('T')[0];
-      futureDates.push(dateOnly);
-    }
-
-    if (workout) {
-      let exercises = workout.exercises;
-
-      for (let date of futureDates) {
-        const existingWorkout = await Workout.findOne({ userEmail: userEmail, date: date });
-        if (existingWorkout) {
-          await Workout.deleteOne({ _id: existingWorkout._id })
-        }
-
-        exercises = getRandomElements(exercises, exercises.length);
-
-        const newWorkout = new Workout({
+        let newWorkout = new Workout({
           userEmail: userEmail,
           plan: planPrefs.workoutPlan,
-          date: date,
+          date: futureDates[i],
           completion: false,
           exercises: exercises,
         });
 
         await newWorkout.save();
-        user.workouts.push(newWorkout);
       }
-
-      await user.save();
-      return res.json('workouts created');
     }
-    else {
-      const firstWorkout = await generateWorkout(req, res);
 
-      let exercises = firstWorkout.exercises;
-
-      for (let date of futureDates) {
-        const existingWorkout = await Workout.findOne({ userEmail: userEmail, date: date });
-        if (existingWorkout) {
-          await Workout.deleteOne({ _id: existingWorkout._id })
-        }
-
-        exercises = getRandomElements(exercises, exercises.length);
-
-        const newWorkout = new Workout({
-          userEmail: userEmail,
-          plan: planPrefs.workoutPlan,
-          date: date,
-          completion: false,
-          exercises: exercises,
-        });
-
-        console.log(date);
-
-        await newWorkout.save();
-        user.workouts.push(newWorkout);
-      }
-
-      await user.save();
-      return res.json('workouts updated');
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(201).json({
+      msg: '*Workouts Created*'
+    })
+  }
+  catch (err) {
+    console.error('Error updating workouts:', err);
+    res.status(400).send(err);
   }
 }
 
@@ -113,9 +59,6 @@ const findWorkout = async (req, res) => {
   const userEmail = String(req.body.userEmail);
   const date = String(req.body.date);
 
-  console.log(userEmail);
-  console.log(date);
-
   const workout = await Workout.findOne({ userEmail: userEmail, date: date });
 
   if (!workout) {
@@ -123,6 +66,24 @@ const findWorkout = async (req, res) => {
   }
 
   return res.status(200).json(workout);
+}
+
+
+const deleteWorkouts = async (req, res) => {
+  try {
+    const userEmail = String(req.body.userEmail);
+
+    const result = await Workout.deleteMany({ userEmail: userEmail });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'No workouts found for this user' });
+    }
+
+    return res.status(200).json({ message: 'All workouts deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting workouts:', err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
 const setWorkoutComplete = async (req, res) => {
@@ -143,9 +104,6 @@ const setWorkoutComplete = async (req, res) => {
 const generateWorkout = async (req, res) => {
   const userEmail = String(req.body.userEmail);
   const planPrefs = await WorkoutPrefs.findOne({ userEmail: userEmail });
-
-  console.log(userEmail);
-  console.log(planPrefs);
 
   try {
     let exerciseData = [];
@@ -322,5 +280,6 @@ module.exports = {
   updateWorkoutMonth,
   findWorkout,
   setWorkoutComplete,
+  deleteWorkouts,
 }
 
