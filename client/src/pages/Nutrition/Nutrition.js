@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Button, Row, Col } from 'react-bootstrap';
 import { SideBar } from '../../components/dashboard-sidebar/SideBar';
+import { getNextDay, getPreviousDay, getDayOfWeek } from '../../utility/dateUtils';
 import axios from 'axios';
 
 export const Nutrition = () => {
@@ -12,6 +13,8 @@ export const Nutrition = () => {
   const [currentFoodName, setCurrentFoodName] = useState('click a food item');
   const [foodPicture, setFoodPicture] = useState('');
   const [foodLink, setFoodLink] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [day, setDay] = useState(getDayOfWeek(date));
   const hasFetched = useRef(false);
 
   const weightLossInfo = `You're current plan is the weight loss plan. This
@@ -34,16 +37,15 @@ export const Nutrition = () => {
   useEffect(() => {
     if (hasFetched.current) return;
 
-    const fetchTodaysPlan = async () => {
-      console.log('fetching plan');
-      const plan = await getTodaysMealPlan();
+    const fetchDaysPlan = async () => {
+      const plan = await getDaysPlan(date);
       setTodaysPlan(plan);
       const userPlan = await getUserNutritionPlan();
       setUserNutritionPlan(userPlan);
       setIsLoading(false);
     };
 
-    fetchTodaysPlan();
+    fetchDaysPlan();
     hasFetched.current = true;
   }, []);
 
@@ -63,12 +65,44 @@ export const Nutrition = () => {
     }
   }
 
+  const setPreviousMeal = async () => {
+    setIsLoading(true);
+
+    try {
+      const nextDate = getPreviousDay(date);
+      setDate(nextDate);
+      setDay(getDayOfWeek(nextDate));
+
+      const plan = await getDaysPlan(nextDate);
+      setTodaysPlan(plan);
+    } catch (error) {
+      console.error('Error fetching the plan:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const setNextMeal = async () => {
+    setIsLoading(true);
+
+    try {
+      const nextDate = getNextDay(date);
+      setDate(nextDate);
+      setDay(getDayOfWeek(nextDate));
+
+      const plan = await getDaysPlan(nextDate);
+      setTodaysPlan(plan);
+    } catch (error) {
+      console.error('Error fetching the plan:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   async function setFoodImage(name) {
     try {
       const response = await axios.post('http://localhost:8080/api/image/find',
         { name: name });
-
-      console.log(response.data[0]);
 
       setFoodPicture(response.data[0]);
     } catch (error) {
@@ -76,14 +110,12 @@ export const Nutrition = () => {
     }
   }
 
-  const getTodaysMealPlan = async () => {
-    const currentDate = new Date().toISOString().split('T')[0];
-
+  const getDaysPlan = async (date) => {
     await axios.post('http://localhost:8080/api/food/updatePlan',
       { userEmail: userEmail });
 
     const response = await axios.post('http://localhost:8080/api/food/findMeal',
-      { userEmail: userEmail, date: currentDate });
+      { userEmail: userEmail, date: date });
 
     return response.data;
   }
@@ -99,7 +131,6 @@ export const Nutrition = () => {
     const response = await axios.get('http://localhost:8080/api/workout/userPreferences',
       { params: { userEmail: userEmail } });
 
-    console.log(response.data.workoutPlan);
     return response.data.workoutPlan;
 
   }
@@ -115,71 +146,90 @@ export const Nutrition = () => {
             <>
               <Col md={6}>
                 <div className="spinner-border" role="status"></div>
-                <span>Loading Today's Meal Plan</span>
+                <span>Loading {day} 's Meal Plan</span>
                 <div className="spinner-border" role="status"></div>
               </Col>
             </>
           ) : (
             <>
               <Col md={6}>
-                <h2>
-                  Welcome to Today's {userNutritionPlan &&
-                    <span class="badge rounded-circle text-dark" style={{ backgroundColor: 'yellow', padding: '10px' }}>
-                      {" " + userNutritionPlan.toString() + " "}
-                    </span>
-                  } Meal Plan
-                </h2>
-                <table className="table table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>Meal</th>
-                      <th>Food</th>
-                      <th>Total Calories</th>
-                      <th>Servings</th>
-                      <th>Protien dv%</th>
-                      <th>Carbs dv%</th>
-                      <th>Fat dv%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food, index) => {
-                      const mealName = index < 3 ? mealNames[index] : "Snack";
-                      return (
-                        <tr
-                          key={food.id}
-                          onClick={() => {
-                            setCurrentFoodName(food.name);
-                            setFoodImage(food.name);
-                            if (food.link != null) {
-                              setFoodLink(food.link);
-                            }
-                          }}
-                        >
-                          <td>{mealName}</td>
-                          <td className="col-5">{food.name}</td>
-                          <td>{food.calories * food.servings}</td>
-                          <td>{food.servings}</td>
-                          <td>{food.proteinDv + "%"}</td>
-                          <td>{food.carbsDv + "%"}</td>
-                          <td>{food.fatDv + "%"}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <h6 className="text-center mt-5 ml-3">How We Generate Your Plans</h6>
-                <div class="border border-3 border-warning rounded p-3">
-                  <h6 className="mb-3">{planInfo}</h6>
-                  <h6 className="mb-3">
-                    FatSecret provides a large database of foods and thier nutritional
-                    information. This allows us to use key terms to generate a unique
-                    and personal nutrition plan for you.
-                  </h6>
-                  <h6>Learn more about FatSecret</h6>
-                  <h6>
-                    <a href="https://platform.fatsecret.com/about" target="_blank" rel="noopener noreferrer">https://platform.fatsecret.com/about</a>
-                  </h6>
-                </div>
+                <Row>
+                  <h2>
+                    Welcome to {day}'s {userNutritionPlan &&
+                      <span class="badge rounded-circle text-dark" style={{ backgroundColor: 'yellow', padding: '10px' }}>
+                        {" " + userNutritionPlan.toString() + " "}
+                      </span>
+                    } Meal Plan
+                  </h2>
+                </Row>
+                <Row className="mt-4">
+                  <Col>
+                    <Button variant="primary" onClick={() => setPreviousMeal()}>
+                      &lt;
+                    </Button>
+                  </Col>
+                  <Col>
+                    <h3>{day + ' ' + date}</h3>
+                  </Col>
+                  <Col>
+                    <Button variant="primary" onClick={() => setNextMeal()}>
+                      &gt;
+                    </Button>
+                  </Col>
+                </Row>
+                <Row>
+                  <table className="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th>Meal</th>
+                        <th>Food</th>
+                        <th>Total Calories</th>
+                        <th>Servings</th>
+                        <th>Protien dv%</th>
+                        <th>Carbs dv%</th>
+                        <th>Fat dv%</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {todaysPlan && todaysPlan.foods && todaysPlan.foods.map((food, index) => {
+                        const mealName = index < 3 ? mealNames[index] : "Snack";
+                        return (
+                          <tr
+                            key={food.id}
+                            onClick={() => {
+                              setCurrentFoodName(food.name);
+                              setFoodImage(food.name);
+                              if (food.link != null) {
+                                setFoodLink(food.link);
+                              }
+                            }}
+                          >
+                            <td>{mealName}</td>
+                            <td className="col-5">{food.name}</td>
+                            <td>{food.calories * food.servings}</td>
+                            <td>{food.servings}</td>
+                            <td>{food.proteinDv + "%"}</td>
+                            <td>{food.carbsDv + "%"}</td>
+                            <td>{food.fatDv + "%"}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <h6 className="text-center mt-5 ml-3">How We Generate Your Plans</h6>
+                  <div class="border border-3 border-warning rounded p-3">
+                    <h6 className="mb-3">{planInfo}</h6>
+                    <h6 className="mb-3">
+                      FatSecret provides a large database of foods and thier nutritional
+                      information. This allows us to use key terms to generate a unique
+                      and personal nutrition plan for you.
+                    </h6>
+                    <h6>Learn more about FatSecret</h6>
+                    <h6>
+                      <a href="https://platform.fatsecret.com/about" target="_blank" rel="noopener noreferrer">https://platform.fatsecret.com/about</a>
+                    </h6>
+                  </div>
+                </Row>
               </Col>
               <Col md={4}>
                 <div className="pb-2 mb-3 border-bottom">
@@ -189,6 +239,7 @@ export const Nutrition = () => {
                   <div className="text-center">
                     <img src={foodPicture.src.medium} alt={currentFoodName} className="img-fluid" />
                     <h6 className="text-center">©Images provided by Pexels</h6>
+                    <h6 className="text-center">Actual meal may differ from image</h6>
                     <a className="text-center">{foodLink}</a>
                   </div>
                 )}
