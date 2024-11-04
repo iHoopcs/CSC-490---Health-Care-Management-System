@@ -1,0 +1,41 @@
+ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+/*targets <li><a> inside ul*/
+ul > li a {
+    color: black;
+}
+
+ul > li a:hover {
+    color: blue;
+}
+
+div > h4 {
+    font-style: italic;
+    font-weight: lighter;
+    text-decoration: underline;
+}
+
+div > p {
+    font-size: larger;
+    text-indent: 50px;
+}
+
+div > h5 {
+    padding: 15px;
+}
+
+#sub-header {
+    background-color: #f8f9fa; /* Background color */
+    padding: 15px; /* Padding for spacing */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+
+.header-content {
+    padding-top: 90px;
+    margin-top: -90px;
+
+}
