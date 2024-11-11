@@ -60,4 +60,4 @@ const getDayOfWeek = (formattedDate) => {
   return dayNames[dayOfWeek];
 }
 
-module.exports = { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore };
+module.exports = { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore, getDayOfWeek };

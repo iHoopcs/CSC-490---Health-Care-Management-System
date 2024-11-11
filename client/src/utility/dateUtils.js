@@ -59,4 +59,16 @@ const getDayOfWeek = (formattedDate) => {
   return dayNames[dayOfWeek];
 }
 
-module.exports = { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore, getDayOfWeek };
+const getNextDay = (formattedDate) => {
+  let date = parseDate(formattedDate);
+  date.setDate(date.getDate() + 1);
+  return formatDate(date);
+}
+
+const getPreviousDay = (formattedDate) => {
+  let date = parseDate(formattedDate);
+  date.setDate(date.getDate() + - 1);
+  return formatDate(date);
+}
+
+module.exports = { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore, getDayOfWeek, getNextDay, getPreviousDay }; 

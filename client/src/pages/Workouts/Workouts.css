@@ -29,8 +29,7 @@
   transform-style: preserve-3d;
 }
 
-
-.card {
+.container card {
   width: 100%;
   background: #fff;
   color: #333;
@@ -45,30 +44,7 @@
 .card.back {
   background: #f4f4f4;
   transform: rotateY(180deg);
-}
-
-.card-image {
-  width: 100%;
-  /* Same width as flip cards */
-  height: 80%;
-  /* Fixed height for images */
-  object-fit: cover;
-  /* Ensure images cover the area without distortion */
-  margin-bottom: 10px;
-  /* Add space between image and text */
-}
-
-.card-image {
-  width: 100%;
-  /* Same width as flip cards */
-  height: 80%;
-  /* Fixed height for images */
-  object-fit: cover;
-  /* Ensure images cover the area without distortion */
-  margin-bottom: 10px;
-  /* Add space between image and text */
-  margin-bottom: 10px;
-  /* Add space between image and text */
+  backface-visibility: hidden;
 }
 
 .card-image {
@@ -82,44 +58,4 @@
   /* Add space between image and text */
   margin-bottom: 10px;
   /* Add space between image and text */
-}
-
-
-.card-image {
-  width: 100%;
-  /* Same width as flip cards */
-  height: 80%;
-  /* Fixed height for images */
-  object-fit: cover;
-  /* Ensure images cover the area without distortion */
-  margin-bottom: 10px;
-  /* Add space between image and text */
-  margin-bottom: 10px;
-  /* Add space between image and text */
-}
-
-.card-image {
-  width: 100%;
-  /* Same width as flip cards */
-  height: 80%;
-  /* Fixed height for images */
-  object-fit: cover;
-  /* Ensure images cover the area without distortion */
-  margin-bottom: 10px;
-  /* Add space between image and text */
-  margin-bottom: 10px;
-
-  /* Add space between image and text */
-  .card-image {
-    width: 100%;
-    /* Same width as flip cards */
-    height: 80%;
-    /* Fixed height for images */
-    object-fit: cover;
-    /* Ensure images cover the area without distortion */
-    margin-bottom: 10px;
-    /* Add space between image and text */
-    margin-bottom: 10px;
-    /* Add space between image and text */
-  }
 }
