@@ -28,6 +28,14 @@ router.post('/userPreferences', (req, res) => {
   workoutPrefController.updateWorkoutPreferences(req, res);
 });
 
+router.get('/complete', (req, res) => {
+  workoutController.getCompleteCount(req, res);
+});
+
+router.get('/currentStreak', (req, res) => {
+  workoutController.getCurrentStreak(req, res);
+});
+
 router.get('/userPreferences', (req, res) => {
   const email = req.query.userEmail;
 

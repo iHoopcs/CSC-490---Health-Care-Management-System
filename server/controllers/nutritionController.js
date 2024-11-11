@@ -290,11 +290,63 @@ const removeFoodsOverCalorieLimit = (calorieLimit, formattedFoods) => {
   return formattedFoods.filter(food => food.calories <= calorieLimit);
 };
 
+const getCompleteCount = async (req, res) => {
+  const userEmail = req.query.email;
+
+  try {
+    const meals = await MealPlan.find({ userEmail: userEmail });
+    const completedMeals = meals.filter(meal => meal.completion == true);
+
+    res.json({
+      completeCount: completedMeals.length
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getCurrentStreak = async (req, res) => {
+  const userEmail = req.query.email;
+
+  try {
+    const meals = await MealPlan.find({ userEmail: userEmail });
+
+    const todaysDate = new Date();
+
+    const tomorrowsDate = new Date(todaysDate);
+    tomorrowsDate.setDate(todaysDate.getDate() + 1);
+
+    const formattedDate = new Date(todaysDate).toLocaleDateString('en-CA'); // 'en-CA' locale formats date as yyyy-mm-dd
+
+    const lastMeals = meals
+      .filter(meal => new Date(meal.date) <= todaysDate)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    let currentStreak = 0;
+
+    for (const meal of lastMeals) {
+      if (meal.completion == true) {
+        currentStreak++;
+      } else {
+        break;
+      }
+    }
+
+    res.json({
+      streak: currentStreak
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   searchFood: searchFood,
   generateWeekPlan: generateWeekPlan,
   updatePlan: updateNutritionPlan,
   findMealPlanByDate: findMealPlanByDate,
-  setMealComplete: setMealComplete
-}
+  setMealComplete: setMealComplete,
+  getCompleteCount: getCompleteCount,
+  getCurrentStreak: getCurrentStreak,
+};

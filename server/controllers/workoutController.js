@@ -95,7 +95,7 @@ const setWorkoutComplete = async (req, res) => {
   workout.completion = true;
   workout.save();
 
-  return res.json('workout set complete');
+  return res.json('workout on ' + date + ' set complete');
 }
 
 /*
@@ -275,11 +275,65 @@ function getRandomElements(arr, count) {
   return arr.slice(0, count);
 }
 
+
+const getCompleteCount = async (req, res) => {
+  const userEmail = req.query.email;
+
+  try {
+    const workouts = await Workout.find({ userEmail: userEmail });
+    const completedWorkouts = workouts.filter(workout => workout.completion == true);
+
+    res.json({
+      completeCount: completedWorkouts.length
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getCurrentStreak = async (req, res) => {
+  const userEmail = req.query.email;
+
+  try {
+    const workouts = await Workout.find({ userEmail: userEmail });
+
+    const todaysDate = new Date();
+
+    const tomorrowsDate = new Date(todaysDate);
+    tomorrowsDate.setDate(todaysDate.getDate() + 1);
+
+    const formattedDate = new Date(todaysDate).toLocaleDateString('en-CA'); // 'en-CA' locale formats date as yyyy-mm-dd
+
+    const lastWorkouts = workouts
+      .filter(workout => new Date(workout.date) <= todaysDate)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    let currentStreak = 0;
+
+    for (const workout of lastWorkouts) {
+      if (workout.completion == true) {
+        currentStreak++;
+      } else {
+        break;
+      }
+    }
+
+    res.json({
+      streak: currentStreak
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   provideSampleWorkout,
   updateWorkoutMonth,
   findWorkout,
   setWorkoutComplete,
   deleteWorkouts,
+  getCompleteCount,
+  getCurrentStreak,
 }
 

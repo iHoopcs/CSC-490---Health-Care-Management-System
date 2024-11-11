@@ -26,5 +26,13 @@ router.post('/setMealComplete', (req, res) => {
   nutritionController.setMealComplete(req, res);
 })
 
+router.get('/complete', (req, res) => {
+  nutritionController.getCompleteCount(req, res);
+});
+
+router.get('/currentStreak', (req, res) => {
+  nutritionController.getCurrentStreak(req, res);
+});
+
 
 module.exports = router;
