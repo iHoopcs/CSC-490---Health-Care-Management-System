@@ -1,66 +1,126 @@
+/* Calendar container with flexbox */
 .calendar-container {
-    position: relative;
-  }
-  
- /* Calendar.css */
-.hoverable:hover {
-  background-color: #007bff; /* Bootstrap primary color */
-  color: #fff;
-  border-color: #0056b3;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* New header styling */
+.calendar-header {
+  background-color: #f8f9fa;
+  padding: 10px;
+  display: flex;  /* Enable flexbox */
+  justify-content: space-between; /* Space the title and button apart */
+  align-items: center; /* Vertically center the items */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+/* Style for the View Achievements button */
+.calendar-header button {
+  background-color: #5bb1e6;  /* Light blue background */
+  color: black;  /* White text color */
+  border: none;  /* Remove default border */
+  padding: 10px 20px;  /* Add some padding for the button */
+  font-size: 1rem;  /* Font size */
+  cursor: pointer;  /* Cursor pointer on hover */
+  border-radius: 5px;  /* Rounded corners */
+  transition: background-color 0.3s ease;  /* Smooth background color transition */
+}
+
+/* Button hover effect */
+.calendar-header button:hover {
+  background-color: #5eafdb;  /* Darker blue on hover */
+}
+
+
+/* Layout for sidebar and calendar */
+.dashboard-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden; /* Prevent sidebar and calendar from overflowing */
+}
+
+/* Left sidebar styling */
+.sidebar {
+  width: 200px; /* Thin sidebar */
+  background-color: #f1f1f1;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  position: fixed; /* Sidebar fixed to the left */
+  top: 60px; /* Adjust based on the header height */
+  bottom: 0;
+  z-index: 10;
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 10px 0;
   cursor: pointer;
+  font-size: 1.1rem;
 }
 
-.workout-event {
-  transition: background-color 0.3s, color 0.3s;
+.sidebar li:hover {
+  background-color: #007bff;
+  color: #fff;
 }
 
-/* Make the modal wider and taller */
+/* Calendar section */
+.calendar-section {
+  flex: 1;
+  margin-left: 2px; /* Offset for the sidebar */
+  padding: 20px;
+  background-color: white;
+  overflow-y: auto; /* Allow scrolling if calendar exceeds height */
+}
+
+/* FullCalendar customizations */
+.fc-daygrid-day {
+  height: 140px;
+  min-width: 100px;
+}
+
+.fc-daygrid-day-number {
+  font-size: 1.5rem;
+  padding: 10px;
+}
+
+/* Modal styling */
 .modal-dialog {
-  max-width: 80vw; /* Adjust width as needed */
-  max-height: 80vh; /* Adjust height as needed */
+  max-width: 80vw;
+  max-height: 80vh;
 }
 
-/* Ensure the modal content scrolls if it exceeds the available space */
 .modal-body {
   overflow-y: auto;
-  max-height: 60vh; /* Limit the modal body height */
-  white-space: pre-wrap; /* Preserve line breaks in text */
-  font-size: 1rem; /* Adjust text size if necessary */
+  max-height: 60vh;
+  white-space: pre-wrap;
+  font-size: 1rem;
 }
 
-/* Adjust font size and spacing for clearer layout */
 .modal-title {
-  font-size: 1.5rem; /* Increase title font size */
+  font-size: 1.5rem;
 }
 
 .modal-body p {
-  font-size: 1.1rem; /* Increase text size for better readability */
-}
-
-
-/* Increase the size of each day cell */
-.fc-daygrid-day {
-  height: 140px; /* Adjust this value for taller cells */
-  min-width: 100px; /* Adjust this value for wider cells */
-}
-
-/* Optional: Adjust the font size or padding for better visibility */
-.fc-daygrid-day-number {
-  font-size: 1.5rem; /* Increase the font size of the day numbers */
-  padding: 10px; /* Add some padding */
-}
-
-/* Optional: Increase the overall calendar font size */
-.fc {
-  font-size: 1.4rem; /* Adjust the overall font size of the calendar */
+  font-size: 1.1rem;
 }
 
 .loading-spinner {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full screen height */
+  height: 100vh;
 }
-
-
-

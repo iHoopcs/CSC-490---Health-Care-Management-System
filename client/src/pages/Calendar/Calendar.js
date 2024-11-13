@@ -4,6 +4,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
+import { SideBar } from '../../components/dashboard-sidebar/SideBar';
+import { Link } from 'react-router-dom';  // Import Link for navigation
 import './Calendar.css';
 
 // Helper function to check available workout days for a user
@@ -229,27 +231,48 @@ export const Calendar = React.memo(() => {
 
   return (
     <div className="calendar-container">
-      <FullCalendar
-        ref={calendarRef}
-        plugins={[dayGridPlugin]}
-        initialView="dayGridMonth"
-        headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,dayGridWeek,dayGridDay',
-        }}
-        events={[]} // No initial events
-        datesSet={handleDatesSet} // Callback for when dates change
-        eventClick={handleEventClick} // Callback for event clicks
-        eventContent={renderEventContent} // Custom render event content
-      />
-      <WorkoutModal 
-        show={showModal} 
-        onHide={() => setShowModal(false)} 
-        selectedEvent={selectedEvent} 
-        onComplete={handleCompleteEvent} 
-        isCompleted={isCompleted} 
-      />
+    <div className="row w-100">
+      <div className="col-sm-auto">
+        {/* Sidebar */}
+        <SideBar />
+      </div>
+
+      <div className="col">
+        <div className="container-fluid p-4">
+          <header className="calendar-header">
+            <h1>My Calendar</h1>
+            {/* Link to the achievements page */}
+            <Link to="/achievements">
+              <button>View Achievements</button>
+            </Link>
+          </header>
+
+          <div className="calendar-section">
+            <FullCalendar
+              ref={calendarRef}
+              plugins={[dayGridPlugin]}
+              initialView="dayGridMonth"
+              headerToolbar={{
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,dayGridWeek,dayGridDay',
+              }}
+              events={[]} // No initial events
+              datesSet={handleDatesSet} // Callback for when dates change
+              eventClick={handleEventClick} // Callback for event clicks
+              eventContent={renderEventContent} // Custom render event content
+            />
+            <WorkoutModal
+              show={showModal}
+              onHide={() => setShowModal(false)}
+              selectedEvent={selectedEvent}
+              onComplete={handleCompleteEvent}
+              isCompleted={isCompleted}
+            />
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
   );
 });
