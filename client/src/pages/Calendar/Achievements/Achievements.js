@@ -10,12 +10,14 @@ export const Achievements = () => {
   const [hasCompletedCrumbs, setHasCompletedCrumbs] = useState(false);
   const [hasCompletedConsistency, setHasCompletedConsistency] = useState(false);
 
+  const [workoutMedals, setWorkoutMedals] = useState({});
+  const [mealPlanMedals, setMealPlanMedals] = useState({});
+
   useEffect(() => {
     const userEmail = localStorage.getItem('userEmail');
 
     const checkAchievements = async () => {
       try {
-        // API calls for workout and meal plan completion data
         const workoutResponse = await axios.get('http://localhost:8080/api/workout/complete', {
           params: { email: userEmail },
         });
@@ -24,18 +26,32 @@ export const Achievements = () => {
           params: { email: userEmail },
         });
 
-        // Extract data from API responses
-        const { completedWorkouts } = workoutResponse.data;
-        const { completedMeals } = mealResponse.data;
+        // Access completeCount directly
+        const completedWorkouts = workoutResponse.data.completeCount;
+        const completedMeals = mealResponse.data.completeCount;
 
         // Set workout achievement status
-        setHasCompletedBabySteps(completedWorkouts >= 1); // Achievement: Completed 1 workout
-        setHasCompletedGettingIt(completedWorkouts >= 7); // Achievement: Completed 7 workouts
-        setHasCompletedTitan(completedWorkouts >= 30);   // Achievement: Completed 30 workouts
+        setHasCompletedBabySteps(completedWorkouts >= 1);  // Achievement: Completed 1 workout
+        setHasCompletedGettingIt(completedWorkouts >= 7);  // Achievement: Completed 7 workouts
+        setHasCompletedTitan(completedWorkouts >= 30);     // Achievement: Completed 30 workouts
 
         // Set meal-plan achievement status
-        setHasCompletedCrumbs(completedMeals >= 1);       // Achievement: Completed 1 meal plan
-        setHasCompletedConsistency(completedMeals >= 7);  // Achievement: Completed 7 meal plans
+        setHasCompletedCrumbs(completedMeals >= 1);        // Achievement: Completed 1 meal plan
+        setHasCompletedConsistency(completedMeals >= 7);   // Achievement: Completed 7 meal plans
+
+        // Set medals based on completed workouts
+        setWorkoutMedals({
+          babySteps: completedWorkouts >= 1 ? ('bronze') : null,
+          gettingIt: completedWorkouts >= 7 ? ('silver') : null,
+          titan: completedWorkouts >= 30 ? 'gold' : null,
+        });
+
+        // Set medals based on completed meals
+        setMealPlanMedals({
+          crumbs: completedMeals >= 1 ? ('bronze') : null,
+          consistency: completedMeals >= 7 ? ('silver'): null,
+        });
+
       } catch (error) {
         console.error('Error checking achievements:', error);
       }
@@ -43,6 +59,14 @@ export const Achievements = () => {
 
     checkAchievements();
   }, []);
+
+  // Helper function to render the medal
+  const renderMedal = (medalType) => {
+    if (medalType === 'gold') return <span className="medal gold">🥇</span>;
+    if (medalType === 'silver') return <span className="medal silver">🥈</span>;
+    if (medalType === 'bronze') return <span className="medal bronze">🥉</span>;
+    return null;
+  };
 
   return (
     <div className="achievements-container">
@@ -60,22 +84,22 @@ export const Achievements = () => {
               <p>Workout Achievements:</p>
               <ul>
                 <li className={hasCompletedBabySteps ? 'achieved' : ''}>
-                  {hasCompletedBabySteps ? '✓ ' : ''}Baby steps
+                  {renderMedal(workoutMedals.babySteps)} Baby steps
                 </li>
                 <li className={hasCompletedGettingIt ? 'achieved' : ''}>
-                  {hasCompletedGettingIt ? '✓ ' : ''}Getting it
+                  {renderMedal(workoutMedals.gettingIt)} Getting it
                 </li>
                 <li className={hasCompletedTitan ? 'achieved' : ''}>
-                  {hasCompletedTitan ? '✓ ' : ''}Titan!
+                  {renderMedal(workoutMedals.titan)} Titan!
                 </li>
               </ul>
               <p>Meal-plan Achievements:</p>
               <ul>
                 <li className={hasCompletedCrumbs ? 'achieved' : ''}>
-                  {hasCompletedCrumbs ? '✓ ' : ''}Crumbs
+                  {renderMedal(mealPlanMedals.crumbs)} Crumbs
                 </li>
                 <li className={hasCompletedConsistency ? 'achieved' : ''}>
-                  {hasCompletedConsistency ? '✓ ' : ''}Consistency
+                  {renderMedal(mealPlanMedals.consistency)} Consistency
                 </li>
               </ul>
             </div>

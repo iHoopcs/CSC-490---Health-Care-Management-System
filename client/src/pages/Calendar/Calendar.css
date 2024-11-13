@@ -124,3 +124,8 @@
   align-items: center;
   height: 100vh;
 }
+
+ .meal-event {
+  background-color: green; /* Change background to green */
+  color: white; /* Set text color to white for better contrast */
+}

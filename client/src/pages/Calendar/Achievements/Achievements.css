@@ -1,5 +1,21 @@
 .achieved {
-    font-weight: bold;
-    color: green;
-  }
-  
+  font-weight: bold;
+  color: initial;
+}
+
+.medal {
+  margin-right: 10px;
+  font-size: 1.5em;
+}
+
+.gold {
+  color: #ffd700;
+}
+
+.silver {
+  color: #c0c0c0;
+}
+
+.bronze {
+  color: #cd7f32;
+}
