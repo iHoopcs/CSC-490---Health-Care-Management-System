@@ -9,6 +9,8 @@ import { Workouts } from './pages/Workouts/Workouts.js';
 import { WorkoutPlan } from './pages/Workouts/plan_pages/WorkoutPlan';
 import { WorkoutDay } from './pages/Workouts/plan_pages/WorkoutDay';
 import { Social } from './pages/Social/Social.js';
+import { Achievements } from './pages/Calendar/Achievements/Achievements';
+
 
 /**
   * Entry point of the application used to manage the pages of the
@@ -29,6 +31,7 @@ function App() {
           <Route path='/nutrition' element={<Nutrition />} />
           <Route path='/calendar' element={<Calendar />} />
           <Route path='/social' element={<Social />} />
+          <Route path="/achievements" element={<Achievements />} />
         </Routes>
       </BrowserRouter>
     </>
