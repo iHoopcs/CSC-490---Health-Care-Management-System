@@ -9,7 +9,7 @@ function Popup(props) {
   return (props.trigger) ? (
     <div className="popup" data-testid="popup-1">
       <div className="popup-inner">
-        <button className="close-btn"
+        <button className="close-btn btn btn-primary"
           onClick={() => props.setTrigger(false)}>
           close
         </button>

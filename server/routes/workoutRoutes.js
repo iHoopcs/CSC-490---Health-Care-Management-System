@@ -16,12 +16,24 @@ router.post('/findWorkout', (req, res) => {
   workoutController.findWorkout(req, res);
 });
 
+router.post('/deletePlans', (req, res) => {
+  workoutController.deleteWorkouts(req, res);
+});
+
 router.post('/setWorkoutComplete', (req, res) => {
   workoutController.setWorkoutComplete(req, res);
 });
 
 router.post('/userPreferences', (req, res) => {
   workoutPrefController.updateWorkoutPreferences(req, res);
+});
+
+router.get('/complete', (req, res) => {
+  workoutController.getCompleteCount(req, res);
+});
+
+router.get('/currentStreak', (req, res) => {
+  workoutController.getCurrentStreak(req, res);
 });
 
 router.get('/userPreferences', (req, res) => {

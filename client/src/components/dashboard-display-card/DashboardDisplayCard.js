@@ -1,28 +1,28 @@
 import React from 'react'
-import './DashboardDisplayCard.css'; 
+import './DashboardDisplayCard.css';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const DashboardCard = (props) => {
-  const { 
-    displayText, 
-    backgroundImgSrc, 
-    textColor, 
-    width, 
+  const {
+    displayText,
+    backgroundImgSrc,
+    textColor,
+    width,
     height,
     href
-  } = props; 
+  } = props;
 
   const cardStyle = {
-    width: width, 
+    width: width,
     height: height,
     textAlign: 'left',
-    padding: '10px', 
-    border: 'solid black 2px', 
+    border: 'solid black 2px',
     backgroundImage: `url(${backgroundImgSrc})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     color: textColor,
-    padding: '20px'
+    padding: '20px',
   }
 
   //pass token and email to verify user to use /social --> send user object to create posts upon authorization
@@ -32,37 +32,37 @@ export const DashboardCard = (props) => {
     const userEmail = localStorage.getItem('userEmail');
     axios.get('http://localhost:8080/api/userData', {
       headers: {
-          'Authorization': `Bearer ${token}`,
-          'X-User-Email': userEmail,
-          'Accept': 'application/json'
+        'Authorization': `Bearer ${token}`,
+        'X-User-Email': userEmail,
+        'Accept': 'application/json'
       }
-  })
+    })
       .then((response) => {
-          console.log(response)
-          if (response.status === 200) {
-              sessionStorage.setItem('userProfileData', JSON.stringify(response.data.user))
-              window.location.href = '/social'
-          }else {
-              console.log('An error occured')
-          }
+        console.log(response)
+        if (response.status === 200) {
+          sessionStorage.setItem('userProfileData', JSON.stringify(response.data.user))
+          window.location.href = '/social'
+        } else {
+          console.log('An error occured')
+        }
       })
       .catch(err => console.log(err))
   }
 
   return (
-    <>  
+    <>
       {
-        href === '/social' 
-          ? 
+        href === '/social'
+          ?
           <a onClick={verifyUser}>
+            <h6>{displayText}</h6>
             <div className='card' style={cardStyle}>
-                <h5>{displayText}</h5>
             </div>
           </a>
-          : 
-          <a href={href}>
+          :
+          <a href={href} style={{ color: 'black' }}>
+            <h6>{displayText}</h6>
             <div className='card' style={cardStyle}>
-                <h5>{displayText}</h5>
             </div>
           </a>
       }

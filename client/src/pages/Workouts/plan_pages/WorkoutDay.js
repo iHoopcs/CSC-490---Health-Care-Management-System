@@ -1,136 +1,126 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SideBar } from '../../../components/dashboard-sidebar/SideBar.js';
+import { formatDate, getDaysFromDate, getDayOfWeek } from '../../../utility/dateUtils';
 import { faDumbbell } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
 export const WorkoutDay = () => {
-  const [dayPlan, setDayPlan] = useState(null);
+  const [plans, setPlans] = useState([]);
   const [instructions, setInstructions] = useState('click an exercise');
   const [loading, setLoading] = useState(true);
+  const hasFetched = useRef(false);
 
-  let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  useEffect(() => {
+    if (hasFetched.current) return;
 
-  const today = new Date().getDay();
-  const currentDay = days[today];
+    const userEmail = localStorage.getItem('userEmail');
+    generatePlans(userEmail);
 
-  const getTodaysPlan = async () => {
-    const email = localStorage.getItem('userEmail');
-    let currentDate = new Date();
+    hasFetched.current = true;
+  }, []);
 
-    for (let i = 0; i < 7; i++) {
-      let nextDate = new Date(currentDate);
-      nextDate.setDate(currentDate.getDate() + i);
-      let formattedDate = nextDate.toISOString().split('T')[0];
+  const generatePlans = async (userEmail) => {
+    try {
+      await axios.post('http://localhost:8080/api/workout/updatePlan', { userEmail });
+      let newPlans = [];
 
-      const day = days[nextDate.getDay()];
+      const currentRawDate = new Date();
+      const currentDate = formatDate(currentRawDate);
+      let futureDates = getDaysFromDate(currentDate, 7);
 
-      console.log(email);
-      console.log(formattedDate);
+      for (let i = 0; i < futureDates.length; i++) {
+        try {
+          let workout = await axios.post('http://localhost:8080/api/workout/findWorkout', {
+            userEmail: userEmail,
+            date: futureDates[i]
+          });
 
-      try {
-
-        const response = await axios.post('http://localhost:8080/api/workout/findWorkout',
-          { userEmail: email, date: formattedDate });
-
-        if (response.status === 200 && response.data) {
-          console.log('workout found on date: ' + formattedDate);
-
-          setDayPlan(
-            {
-              day: day,
-              exercises: response.data.exercises,
-              complete: response.data.completion,
-            }
-          );
-
-          setLoading(false);
-          console.log("dayplans day: " + dayPlan.day);
+          if (workout != null) {
+            newPlans.push(workout);
+          }
+        } catch (error) {
+          console.error(`Error fetching workout for date ${futureDates[i]}:`, error);
         }
       }
-      catch (error) {
-        console.log('no workout found on date: ' + formattedDate);
-      }
 
-      if (dayPlan != null) {
-        break;
-      }
+      setPlans(newPlans);
+    } catch (error) {
+      console.error('Error updating workout plan:', error);
+    } finally {
+      setLoading(false);
     }
   }
 
-  useEffect(() => {
-    getTodaysPlan();
-  }, []);
 
   return (
-    <Container className='container-fluid' style={{ width: '100%', height: '100vh', margin: '0', padding: '0' }}>
-      <Row className="w-100 noGutters">
-        <Col md={3}>
+    <div className='container-fluid' style={{ width: '100vw', height: '100vh', margin: '0', padding: '0' }}>
+      <Row className="w-100">
+        <Col sm="auto">
           <SideBar />
         </Col>
         {
           loading ? (
             <>
-              <Col md={3}>
+              <Col md={5}>
                 <div className="spinner-border" role="status"></div>
-                <span>Finding Next Workout day...</span>
+                <span>Finding workouts week in advance...</span>
                 <div className="spinner-border" role="status"></div>
               </Col>
             </>
           ) :
             (
               <>
-                <Col md={4}>
-                  <div className="pb-2 mb-3 border-bottom">
-                    <h1 className="text-center">
-                      {dayPlan.day === new Date().toLocaleString('en-us', { weekday: 'long' })
-                        ? "Today's Plan"
-                        : dayPlan.day}
-                    </h1>
-                    <table className="table table-striped table-hover">
-                      <thead>
-                        <tr>
-                          <th scope="col">
-                            <FontAwesomeIcon icon={faDumbbell} />
-                          </th>
-                          <th scope="col">Exercise</th>
-                          <th scope="col">Duration</th>
-                          <th scope="col">Muscle-Group</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {dayPlan.exercises.map((exercise, i) => (
-                          <tr
-                            key={i}
-                            onClick={() => setInstructions(exercise.instructions)}
-                          >
-                            <th scope="row"></th>
-                            <td>{exercise.name}</td>
-                            <td>{exercise.duration > 0 ? `${exercise.duration} minutes` : `${exercise.reps} reps`}</td>
-                            <td>{exercise.muscle}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                <Col className="gx-5" sm="auto">
+                  <div style={{ width: "40vw", maxHeight: '600px', overflowY: 'auto', paddingRight: '4px' }}>
+                    {plans.map((plan, index) => (
+                      <div key={index} className="pb-3 mt-3 border-bottom">
+                        <h1 className="text-center">{getDayOfWeek(plan.data.date) + "'s workout"}</h1>
+                        <table className="table table-striped table-hover">
+                          <thead>
+                            <tr>
+                              <th scope="col">
+                                <FontAwesomeIcon icon={faDumbbell} />
+                              </th>
+                              <th scope="col">Exercise</th>
+                              <th scope="col">Duration</th>
+                              <th scope="col">Muscle-Group</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {plan.data.exercises.map((exercise, i) => (
+                              <tr
+                                key={i}
+                                onClick={() => setInstructions(exercise.instructions)}
+                              >
+                                <th scope="row"></th>
+                                <td>{exercise.name}</td>
+                                <td>{exercise.duration > 0 ? `${exercise.duration} minutes` : `${exercise.reps} reps`}</td>
+                                <td>{exercise.muscle}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ))}
                   </div>
                 </Col>
-                <Col md={1}>
-                </Col>
-                <Col md={4}>
-                  <div className="pb-2 mb-3 border-bottom">
-                    <h1 className="text-center">Exercise Instructions</h1>
-                  </div>
-                  <div className="p-3 m-3 bg-light rounded" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                    <p className="h5">{instructions}</p>
+                <Col className="gx-1" sm="auto">
+                  <div style={{ width: "35vw" }}>
+                    <div className="pb-2 mt-3 border-bottom">
+                      <h1 className="text-center">Exercise Instructions</h1>
+                    </div>
+                    <div className="p-3 m-3 bg-light rounded" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                      <p className="h5">{instructions}</p>
+                    </div>
                   </div>
                 </Col>
               </>
             )
         }
       </Row>
-    </Container >
+    </div>
   );
 }
-

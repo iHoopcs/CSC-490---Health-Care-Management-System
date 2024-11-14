@@ -6,7 +6,21 @@
   background: white;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+}
+
+.group {
+  display: flex;
+}
+
+.group>*:first-child {
+  flex-grow: 0;
+  min-width: 120px;
+}
+
+.group>* {
+  margin-right: 10px;
+  flex-grow: 1;
 }
 
 .multi-field {
