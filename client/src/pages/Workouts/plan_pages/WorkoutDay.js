@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SideBar } from '../../../components/dashboard-sidebar/SideBar.js';
 import { formatDate, getDaysFromDate, getDayOfWeek } from '../../../utility/dateUtils';
@@ -9,18 +9,31 @@ import axios from 'axios';
 
 export const WorkoutDay = () => {
   const [plans, setPlans] = useState([]);
+  const [currentPlanIndex, setCurrentPlanIndex] = useState([]);
   const [instructions, setInstructions] = useState('click an exercise');
   const [loading, setLoading] = useState(true);
+  const [muscle, setMuscle] = useState('camera');
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (hasFetched.current) return;
+    const fetchData = async () => {
+      if (hasFetched.current) return;
 
-    const userEmail = localStorage.getItem('userEmail');
-    generatePlans(userEmail);
+      const userEmail = localStorage.getItem('userEmail');
+      await generatePlans(userEmail);
+      getTodaysPlan();
 
-    hasFetched.current = true;
-  }, []);
+      hasFetched.current = true;
+    };
+
+    fetchData();
+  }, [plans]);
+
+  useEffect(() => {
+    if (plans.length > 0) {
+      getTodaysPlan();
+    }
+  }, [plans]);
 
   const generatePlans = async (userEmail) => {
     try {
@@ -49,9 +62,42 @@ export const WorkoutDay = () => {
       setPlans(newPlans);
     } catch (error) {
       console.error('Error updating workout plan:', error);
-    } finally {
-      setLoading(false);
     }
+  }
+
+  const getTodaysPlan = () => {
+    setCurrentPlanIndex(0);
+
+    for (const plan in plans) {
+      console.log(plans[plan].data.date);
+
+      if (plans[plan].data.date == formatDate(new Date())) {
+        setCurrentPlanIndex(plan);
+      }
+    }
+
+    if (plans.length > 0) {
+      setLoading(false);
+      console.log("chosen: " + plans[currentPlanIndex].data.date);
+    }
+  }
+
+  const getPreviousPlan = () => {
+    setCurrentPlanIndex((prevIndex) => {
+      if (prevIndex > 0) {
+        return prevIndex - 1;
+      }
+      return prevIndex; // or handle the case when there is no previous plan
+    });
+  }
+
+  const getNextPlan = () => {
+    setCurrentPlanIndex((prevIndex) => {
+      if (prevIndex < plans.length - 1) {
+        return prevIndex + 1;
+      }
+      return prevIndex; // or handle the case when there is no next plan
+    });
   }
 
 
@@ -74,48 +120,87 @@ export const WorkoutDay = () => {
             (
               <>
                 <Col className="gx-5" sm="auto">
-                  <div style={{ width: "40vw", maxHeight: '600px', overflowY: 'auto', paddingRight: '4px' }}>
-                    {plans.map((plan, index) => (
-                      <div key={index} className="pb-3 mt-3 border-bottom">
-                        <h1 className="text-center">{getDayOfWeek(plan.data.date) + "'s workout"}</h1>
-                        <table className="table table-striped table-hover">
-                          <thead>
-                            <tr>
-                              <th scope="col">
-                                <FontAwesomeIcon icon={faDumbbell} />
-                              </th>
-                              <th scope="col">Exercise</th>
-                              <th scope="col">Duration</th>
-                              <th scope="col">Muscle-Group</th>
+                  <Row className="mt-4">
+                    <Col>
+                      <Button variant="primary" onClick={() => { getPreviousPlan() }}>
+                        &lt;
+                      </Button>
+                    </Col>
+                    <Col>
+                      <h3 className="ml-3">{plans[currentPlanIndex].data.date}</h3>
+                    </Col>
+                    <Col>
+                      <Button variant="primary" onClick={() => { getNextPlan() }}>
+                        &gt;
+                      </Button>
+                    </Col>
+                  </Row>
+                  <div style={{ width: "40vw", maxHeight: '600px', paddingRight: '4px' }}>
+                    <div className="pb-3 mt-3 border-bottom">
+                      <h1 className="text-center">{getDayOfWeek(plans[currentPlanIndex].data.date) + "'s workout"}</h1>
+                      <table className="table table-striped table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col">
+                              <FontAwesomeIcon icon={faDumbbell} />
+                            </th>
+                            <th scope="col">Exercise</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col">Muscle-Group</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {plans[currentPlanIndex].data.exercises.map((exercise, i) => (
+                            <tr
+                              key={i}
+                              onClick={() => {
+                                setInstructions(exercise.instructions);
+                                setMuscle(exercise.muscle)
+                              }}
+                            >
+                              <th scope="row"></th>
+                              <td>{exercise.name}</td>
+                              <td>{exercise.duration > 0 ? `${exercise.duration} minutes` : `${exercise.reps} reps`}</td>
+                              <td>{exercise.muscle}</td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {plan.data.exercises.map((exercise, i) => (
-                              <tr
-                                key={i}
-                                onClick={() => setInstructions(exercise.instructions)}
-                              >
-                                <th scope="row"></th>
-                                <td>{exercise.name}</td>
-                                <td>{exercise.duration > 0 ? `${exercise.duration} minutes` : `${exercise.reps} reps`}</td>
-                                <td>{exercise.muscle}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    ))}
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </Col>
-                <Col className="gx-1" sm="auto">
-                  <div style={{ width: "35vw" }}>
-                    <div className="pb-2 mt-3 border-bottom">
-                      <h1 className="text-center">Exercise Instructions</h1>
+                <Col className="gx-5" sm="auto">
+                  <Row className='w-100'>
+                    <Row className="justify-content-center">
+                      <div className="text-center mt-4">
+                        <img
+                          src={"/" + muscle + ".jpg"}
+                          alt="muscle group not found"
+                          style={{
+                            maxWidth: '300px',
+                            maxHeight: '150px'
+                          }}
+                        />
+                        <p
+                          className="h5"
+                        >
+                          {muscle !== 'camera'
+                            ? `muscle group: ${muscle}`
+                            : 'click exercise to view muscle group'}
+                        </p>
+                      </div>
+                    </Row>
+                  </Row>
+                  <Row>
+                    <div style={{ width: "40vw" }}>
+                      <div className="pb-2 mt-3 border-bottom">
+                        <h2 className="text-center">Exercise Instructions</h2>
+                      </div>
+                      <div className="p-3 m-3 bg-light rounded" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                        <p className="h5">{instructions}</p>
+                      </div>
                     </div>
-                    <div className="p-3 m-3 bg-light rounded" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                      <p className="h5">{instructions}</p>
-                    </div>
-                  </div>
+                  </Row>
                 </Col>
               </>
             )
