@@ -13,7 +13,7 @@ ul > li a:hover {
     color: blue;
 }
 
-div > h4 {
+div > h3 {
     font-style: italic;
     font-weight: lighter;
     text-decoration: underline;
@@ -24,8 +24,9 @@ div > p {
     text-indent: 50px;
 }
 
-div > h5 {
+div > h4 {
     padding: 15px;
+    font-weight: lighter;
 }
 
 #sub-header {
