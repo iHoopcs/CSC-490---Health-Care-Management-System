@@ -68,11 +68,11 @@ export const WorkoutDay = () => {
   const getTodaysPlan = () => {
     setCurrentPlanIndex(0);
 
-    for (const plan in plans) {
-      console.log(plans[plan].data.date);
+    for (let i = 0; i < plans.length; i++) {
+      console.log(plans[i].data.date);
 
-      if (plans[plan].data.date == formatDate(new Date())) {
-        setCurrentPlanIndex(plan);
+      if (plans[i].data.date == formatDate(new Date())) {
+        setCurrentPlanIndex(i);
       }
     }
 
@@ -92,8 +92,10 @@ export const WorkoutDay = () => {
   }
 
   const getNextPlan = () => {
+    console.log(plans);
+
     setCurrentPlanIndex((prevIndex) => {
-      if (prevIndex < plans.length - 1) {
+      if (prevIndex < plans.length - 1 && plans.length > 1) {
         return prevIndex + 1;
       }
       return prevIndex; // or handle the case when there is no next plan
