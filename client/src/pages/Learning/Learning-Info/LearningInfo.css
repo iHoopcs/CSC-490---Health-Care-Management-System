@@ -40,3 +40,8 @@ div > h4 {
     margin-top: -90px;
 
 }
+
+.carousel-control-next,
+.carousel-control-prev /*, .carousel-indicators */ {
+    filter: invert(100%);
+}
