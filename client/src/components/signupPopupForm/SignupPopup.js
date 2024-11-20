@@ -31,7 +31,7 @@ function SignupPopup() {
 
   return (
     <div>
-      <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1" className="btn btn-outline-secondary mb-5 text-white">Signup</button>
+      <button onClick={() => setShowSignupPopup(true)} data-testid="signup-1" className="btn btn-primary mb-5 text-white">Signup</button>
       <Popup trigger={showSignupPopup} setTrigger={setShowSignupPopup}>
         <div className="input-fields mt-4">
           <div className="group">
@@ -93,7 +93,7 @@ function SignupPopup() {
                 ? 'invalid-input' : ''}
               onChange={e => setWeight(e.target.value)} />
           </div>
-          <button onClick={() => submitSignupInformation()} className="btn btn-outline-primary w-100">Signup</button>
+          <button onClick={() => submitSignupInformation()} className="btn btn-primary w-100">Signup</button>
 
           {submissionErrors.length > 0 && (
             <div>

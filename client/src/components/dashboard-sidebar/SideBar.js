@@ -89,7 +89,7 @@ export const SideBar = (props) => {
         <div className='bg-light col-auto col-md-3 min-vh-100 w-100 border p-4'>
           <ul className="nav flex-column mt-2">
             <li className=" fs-3 mb-4">
-              <button className='btn btn-outline-secondary' disabled={!checkedForPlan}>
+              <button className='btn btn-primary' disabled={!checkedForPlan}>
                 <a href={hasPlan ? "/workouts/day" : "/workouts"} className="nav-link text-dark">
                   <GiWeightLiftingUp />
                   <span className='ms-2'>Workouts</span>
@@ -98,7 +98,7 @@ export const SideBar = (props) => {
             </li>
 
             <li className="nav-item fs-3 mb-4">
-              <button className='btn btn-outline-secondary' disabled={!checkedForPlan}>
+              <button className='btn btn-primary' disabled={!checkedForPlan}>
                 <a href={hasPlan ? "/nutrition" : "/workouts"} className="nav-link text-dark">
                   <GiFruitBowl />
                   <span className='ms-2'>Nutrition</span>
@@ -107,7 +107,7 @@ export const SideBar = (props) => {
             </li>
 
             <li className="nav-item fs-3">
-              <button className='btn btn-outline-secondary' disabled={!checkedForPlan}>
+              <button className='btn btn-primary' disabled={!checkedForPlan}>
                 <a href="/calendar" className="nav-link text-dark" aria-current="page">
                   <IoCalendarSharp />
                   <span className='ms-2'>Calendar</span>
@@ -118,7 +118,7 @@ export const SideBar = (props) => {
             <ul className="nav">
               <li className="nav-item fs-4 fixed-bottom mb-5 mx-4">
                 <Dropdown className="dropup">
-                  <Dropdown.Toggle variant="outline-secondary" className="text-dark">
+                  <Dropdown.Toggle variant="primary" className="text-dark">
                     <CgProfile />
                     <span className="ms-2">Profile</span>
                   </Dropdown.Toggle>
