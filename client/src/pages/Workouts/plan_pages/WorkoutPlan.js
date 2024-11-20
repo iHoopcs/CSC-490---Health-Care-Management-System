@@ -91,8 +91,8 @@ export const WorkoutPlan = () => {
   return (
     <Container>
       <div className="d-flex justify-content-between mt-3 mb-4">
-        <button onClick={() => regeneratePlans(localStorage.getItem('userEmail'))} type="button" className="btn btn-success">Regenerate</button>
-        <button onClick={AcceptPlan} type="button" className="btn btn-success">Accept Plan</button>
+        <button onClick={() => regeneratePlans(localStorage.getItem('userEmail'))} type="button" className="btn btn-primary">Regenerate</button>
+        <button onClick={AcceptPlan} type="button" className="btn btn-primary">Accept Plan</button>
       </div>
       {
         loading && (
