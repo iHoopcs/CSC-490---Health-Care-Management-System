@@ -1,0 +1,17 @@
+#LearningGameContainer .learning-card-style {
+  height: 25vh;
+  width: 40vw;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease;
+}
+
+#LearningGameContainer .learning-card-style:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+#LearningGameContainer .quiz-btn {
+  max-width: 500px;
+  width: 15vw;
+}

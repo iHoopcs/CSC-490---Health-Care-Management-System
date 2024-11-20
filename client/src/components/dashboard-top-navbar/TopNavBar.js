@@ -9,7 +9,7 @@ export const TopNavBar = () => {
                     <Navbar.Brand href='/dashboard'>NutriFitHealth</Navbar.Brand>
 
                     <Nav>
-                        <Nav.Link>Learn Fitness & Nutrition</Nav.Link>
+                        <Nav.Link href='/learning-info'>Learn Fitness & Nutrition</Nav.Link>
 
                     </Nav>
                 </Container>

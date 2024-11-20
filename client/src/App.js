@@ -9,6 +9,8 @@ import { Workouts } from './pages/Workouts/Workouts.js';
 import { WorkoutPlan } from './pages/Workouts/plan_pages/WorkoutPlan';
 import { WorkoutDay } from './pages/Workouts/plan_pages/WorkoutDay';
 import { Social } from './pages/Social/Social.js';
+import { LearningInfo } from './pages/Learning/Learning-Info/LearningInfo.js';
+import { LearningGame } from './pages/Learning/Learning-Game/LearningGame.js';
 import { Achievements } from './pages/Calendar/Achievements/Achievements';
 
 
@@ -25,12 +27,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/profile' element={<Profile />} />
+          <Route path='/social-page' element={<Social />} />
+          <Route path='/learning-info' element={<LearningInfo />} />
+          <Route path='/learning-game' element={<LearningGame />} />
           <Route path='/workouts/day' element={<WorkoutDay />} />
           <Route path="/plan_pages/WorkoutPlan" element={<WorkoutPlan />} />
           <Route path='/workouts' element={<Workouts />} />
           <Route path='/nutrition' element={<Nutrition />} />
           <Route path='/calendar' element={<Calendar />} />
-          <Route path='/social' element={<Social />} />
           <Route path="/achievements" element={<Achievements />} />
         </Routes>
       </BrowserRouter>
