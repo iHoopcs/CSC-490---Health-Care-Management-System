@@ -52,7 +52,7 @@ export const Dashboard = () => {
                   <DashboardCard
                     displayText="Want to connect with others?"
                     backgroundImgSrc="https://www.freeiconspng.com/thumbs/live-chat-icon/live-chat-icon-6.jpg"
-                    href="/social"
+                    href="/social-page"
                     textColor="black"
                     width="25vw"
                     height="20vh"

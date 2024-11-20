@@ -27,10 +27,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/profile' element={<Profile />} />
-          <Route path='/workouts' element={<Workouts />} />
-          <Route path='/nutrition' element={<Nutrition />} />
-          <Route path='/calendar' element={<Calendar />} />
-          <Route path='/social' element={<Social />} />
+          <Route path='/social-page' element={<Social />} />
           <Route path='/learning-info' element={<LearningInfo />} />
           <Route path='/learning-game' element={<LearningGame />} />
           <Route path='/workouts/day' element={<WorkoutDay />} />
@@ -38,7 +35,6 @@ function App() {
           <Route path='/workouts' element={<Workouts />} />
           <Route path='/nutrition' element={<Nutrition />} />
           <Route path='/calendar' element={<Calendar />} />
-          <Route path='/social' element={<Social />} />
           <Route path="/achievements" element={<Achievements />} />
         </Routes>
       </BrowserRouter>
