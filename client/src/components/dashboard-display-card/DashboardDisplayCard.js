@@ -41,7 +41,7 @@ export const DashboardCard = (props) => {
         console.log(response)
         if (response.status === 200) {
           sessionStorage.setItem('userProfileData', JSON.stringify(response.data.user))
-          window.location.href = '/social'
+          window.location.href = '/social-page'
         } else {
           console.log('An error occured')
         }
