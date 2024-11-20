@@ -52,7 +52,7 @@ export const DashboardCard = (props) => {
   return (
     <>
       {
-        href === '/social'
+        href === '/social-page'
           ?
           <a onClick={verifyUser}>
             <h6>{displayText}</h6>
