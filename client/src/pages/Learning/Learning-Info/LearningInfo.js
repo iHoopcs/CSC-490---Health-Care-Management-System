@@ -1,21 +1,21 @@
 import React from 'react'
 import { SideBar } from '../../../components/dashboard-sidebar/SideBar'
-import './LearningInfo.css'; 
+import './LearningInfo.css';
 import Carousel from 'react-bootstrap/Carousel';
 
 export const LearningInfo = () => {
   return (
     <>
-      <div className='container-fluid'>
+      <div id="LearningInfoContainer" className='container-fluid'>
         <div className='row w-100' style={{ height: '100vh' }}>
           <div className='col-sm-auto'>
-              <SideBar />
+            <SideBar />
           </div>
-          
+
           <div className='col'>
             {/**/}
             <div id='sub-header' >
-              <ul> 
+              <ul>
                 <li><a href='#Basics'>Health & Nutrition Basics</a></li>
                 <li><a href='#FoodGroups'>Major Food Groups</a></li>
                 <li><a href='#BodySystems'>Body Systems</a></li>
@@ -23,22 +23,22 @@ export const LearningInfo = () => {
                 <li><a href='#Avoid'>Things to Avoid</a></li>
               </ul>
             </div>
-            
+
             <div className='container-fluid'>
               <div id='Basics' className='mb-5 mt-5 header-content'>
                 <h3>Basics</h3>
                 <h4>Health is a state of complete physical, mental, and social well-being and not merely the absence of disease or infirmity.</h4>
-              
-                <h4>Nutrition is the study of food and how it affects the health and growth of the body. 
+
+                <h4>Nutrition is the study of food and how it affects the health and growth of the body.
                   Nutrients are substances found in food that our bodies use to grow, reproduce and survive.
                 </h4>
-              
+
                 <h4>
-                  Water is essential for many bodily functions since human bodies are made up of around 60% of water. It helps your body keep normal body temperature, 
+                  Water is essential for many bodily functions since human bodies are made up of around 60% of water. It helps your body keep normal body temperature,
                   lubricates joints, protects your spinal cord, and helps get rid of wastes through sweating, urinating, and bowel movements.
                 </h4>
               </div>
-              
+
               <div id='FoodGroups' className='mb-5 mt-5 header-content'>
                 <div className='row'>
                   <div className='col-8'> {/*Left info */}
@@ -66,42 +66,42 @@ export const LearningInfo = () => {
                   </div>
 
                   <div className='col-4 my-auto'> {/* Right carousel  */}
-                  <Carousel>
-                    <Carousel.Item>
-                      <img 
-                        src="https://promova.com/content/large_list_of_fruits_6f8aa72869.png" 
-                        className="d-block w-100" 
-                        alt="Fruits" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://promova.com/content/vegetables_list_bed1c24ae1.png" 
-                        className="d-block w-100" 
-                        alt="Vegetables" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://i.pinimg.com/474x/7e/de/c5/7edec5bdf04e853f389c20774de05dbc.jpg" 
-                        className="d-block w-100" 
-                        alt="Grains" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src='https://c8.alamy.com/comp/2PN7J4X/high-protein-food-ingredients-set-2PN7J4X.jpg' 
-                        className='d-block w-100' 
-                        alt='Proteins' />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://thedietplate.com/cdn/shop/articles/What_is_Dairy.png?v=1704224579&width=2048" 
-                        className="d-block w-100" 
-                        alt="Dairy" />
-                    </Carousel.Item>
-                  </Carousel>
+                    <Carousel>
+                      <Carousel.Item>
+                        <img
+                          src="https://promova.com/content/large_list_of_fruits_6f8aa72869.png"
+                          className="d-block w-100"
+                          alt="Fruits" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://promova.com/content/vegetables_list_bed1c24ae1.png"
+                          className="d-block w-100"
+                          alt="Vegetables" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://i.pinimg.com/474x/7e/de/c5/7edec5bdf04e853f389c20774de05dbc.jpg"
+                          className="d-block w-100"
+                          alt="Grains" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src='https://c8.alamy.com/comp/2PN7J4X/high-protein-food-ingredients-set-2PN7J4X.jpg'
+                          className='d-block w-100'
+                          alt='Proteins' />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://thedietplate.com/cdn/shop/articles/What_is_Dairy.png?v=1704224579&width=2048"
+                          className="d-block w-100"
+                          alt="Dairy" />
+                      </Carousel.Item>
+                    </Carousel>
                   </div>
                 </div>
 
-                
+
               </div>
 
               <div id='BodySystems' className='mb-5 mt-5 header-content'>
@@ -143,78 +143,78 @@ export const LearningInfo = () => {
                     <p>Working together with the muscular system, it supports the body and enables movement. Responsible for housing all of the bones of your internal skeleton. </p>
                   </div>
 
-                  
+
                   <div className='col-4 my-auto'> {/* Right carousel container */}
-                  <Carousel>
-                    <Carousel.Item>
-                      <img 
-                        src="https://i0.wp.com/gutcaregh.com/wp-content/uploads/2024/04/Lymphatic-System.jpg?fit=1125%2C1486&ssl=1" 
-                        className="d-block w-100" 
-                        alt="Lymphatic System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://my.clevelandclinic.org/-/scassets/images/org/health/articles/respiratory-system" 
-                        className="d-block w-100" 
-                        alt="Respiratory System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://microbenotes.com/wp-content/uploads/2020/06/Integumentary-System.jpg" 
-                        className="d-block w-100" 
-                        alt="Integumentary System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://d2jx2rerrg6sh3.cloudfront.net/image-handler/picture/Endocrine%20organs%20-%20%20Designua_thumb.jpg" 
-                        className="d-block w-100" 
-                        alt="Endocrine System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://www.niddk.nih.gov/-/media/Images/Health-Information/Digestive-Diseases/The_Digestive_System_450x531.jpg" 
-                        className="d-block w-100" 
-                        alt="Digestive System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://nurseslabs.com/wp-content/uploads/2017/04/Urinary-System-Urinary-System-Anatomy-and-Physiology.png" 
-                        className="d-block w-100" 
-                        alt="Urinary System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://nurseslabs.com/wp-content/uploads/2017/07/Muscular-System-Muscular-System.jpg" 
-                        className="d-block w-100" 
-                        alt="Muscular System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://my.clevelandclinic.org/-/scassets/images/org/health/articles/21202-nervous-system" 
-                        className="d-block w-100" 
-                        alt="Nervous System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://www.respiratorytherapyzone.com/wp-content/uploads/2022/10/Cardiovascular-System-Labeled-Vector-Illustration.png" 
-                        className="d-block w-100" 
-                        alt="Cardiovascular System" />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src='https://www.niehs.nih.gov/sites/default/files/health/assets/images/reproductive_health_og.jpg' 
-                        className='d-block w-100' 
-                        alt='Reproductive System' />
-                    </Carousel.Item>
-                    <Carousel.Item>
-                      <img 
-                        src="https://cdn1.byjus.com/wp-content/uploads/2015/12/The-Skeletal-System2.png" 
-                        className="d-block w-100" 
-                        alt="Skeletal System" />
-                    </Carousel.Item>
-                  </Carousel>
+                    <Carousel>
+                      <Carousel.Item>
+                        <img
+                          src="https://i0.wp.com/gutcaregh.com/wp-content/uploads/2024/04/Lymphatic-System.jpg?fit=1125%2C1486&ssl=1"
+                          className="d-block w-100"
+                          alt="Lymphatic System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://my.clevelandclinic.org/-/scassets/images/org/health/articles/respiratory-system"
+                          className="d-block w-100"
+                          alt="Respiratory System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://microbenotes.com/wp-content/uploads/2020/06/Integumentary-System.jpg"
+                          className="d-block w-100"
+                          alt="Integumentary System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://d2jx2rerrg6sh3.cloudfront.net/image-handler/picture/Endocrine%20organs%20-%20%20Designua_thumb.jpg"
+                          className="d-block w-100"
+                          alt="Endocrine System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://www.niddk.nih.gov/-/media/Images/Health-Information/Digestive-Diseases/The_Digestive_System_450x531.jpg"
+                          className="d-block w-100"
+                          alt="Digestive System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://nurseslabs.com/wp-content/uploads/2017/04/Urinary-System-Urinary-System-Anatomy-and-Physiology.png"
+                          className="d-block w-100"
+                          alt="Urinary System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://nurseslabs.com/wp-content/uploads/2017/07/Muscular-System-Muscular-System.jpg"
+                          className="d-block w-100"
+                          alt="Muscular System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://my.clevelandclinic.org/-/scassets/images/org/health/articles/21202-nervous-system"
+                          className="d-block w-100"
+                          alt="Nervous System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://www.respiratorytherapyzone.com/wp-content/uploads/2022/10/Cardiovascular-System-Labeled-Vector-Illustration.png"
+                          className="d-block w-100"
+                          alt="Cardiovascular System" />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src='https://www.niehs.nih.gov/sites/default/files/health/assets/images/reproductive_health_og.jpg'
+                          className='d-block w-100'
+                          alt='Reproductive System' />
+                      </Carousel.Item>
+                      <Carousel.Item>
+                        <img
+                          src="https://cdn1.byjus.com/wp-content/uploads/2015/12/The-Skeletal-System2.png"
+                          className="d-block w-100"
+                          alt="Skeletal System" />
+                      </Carousel.Item>
+                    </Carousel>
                   </div>
-                  
+
                 </div>
                 {/*Cite*/}
                 {/*https://med.libretexts.org/Bookshelves/Anatomy_and_Physiology/Human_Anatomy_and_Physiology_Preparatory_Course_(Liachovitzky)/05%3A_Higher_Levels_of_Complexity-_Organs_and_Systems/5.01%3A_Organs_and_Systems_of_the_Human_Organism#:~:text=They%20are%20Integumentary%20System%2C%20Skeletal,System%20(Female%20and%20Male).*/}
@@ -239,7 +239,7 @@ export const LearningInfo = () => {
                 <h4>*Minimize sugar intake and process food consumption*</h4>
               </div>
             </div>
-            
+
           </div>
 
         </div>
