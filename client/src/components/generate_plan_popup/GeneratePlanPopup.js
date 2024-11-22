@@ -54,7 +54,8 @@ const GeneratePlanPopup = ({
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/workout/userPreferences', workoutPrefs);
+      const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+      const response = await axios.post(PROD_API + 'api/workout/userPreferences', workoutPrefs);
       setGenerationError(''); // Clear any previous errors
       setSubmissionErrors([]); // Clear submission errors on successful plan generation
       window.location.href = '/plan_pages/WorkoutPlan';

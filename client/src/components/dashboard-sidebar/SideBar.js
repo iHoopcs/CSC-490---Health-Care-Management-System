@@ -32,7 +32,8 @@ export const SideBar = (props) => {
     console.log('Request sent')
     const token = localStorage.getItem('token'); //fetch user jwt for validation
     const userEmail = localStorage.getItem('userEmail');
-    axios.get('http://localhost:8080/api/userData', {
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+    axios.get(PROD_API + 'api/userData', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'X-User-Email': userEmail,
@@ -56,7 +57,8 @@ export const SideBar = (props) => {
     const userEmail = localStorage.getItem('userEmail');
 
     try {
-      const response = await axios.get('http://localhost:8080/api/workout/userPreferences',
+      const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+      const response = await axios.get(PROD_API + 'api/workout/userPreferences',
         { params: { userEmail: userEmail } });
 
       const plan = response.data.workoutPlan;

@@ -18,11 +18,12 @@ export const Achievements = () => {
 
     const checkAchievements = async () => {
       try {
-        const workoutResponse = await axios.get('http://localhost:8080/api/workout/complete', {
+        const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+        const workoutResponse = await axios.get(PROD_API + 'api/workout/complete', {
           params: { email: userEmail },
         });
 
-        const mealResponse = await axios.get('http://localhost:8080/api/food/complete', {
+        const mealResponse = await axios.get(PROD_API + 'api/food/complete', {
           params: { email: userEmail },
         });
 

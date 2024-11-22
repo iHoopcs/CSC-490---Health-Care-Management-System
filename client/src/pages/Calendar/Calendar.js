@@ -11,7 +11,8 @@ import './Calendar.css';
 // Helper function to check available workout days for a user
 const checkAvailableDays = async (email) => {
   try {
-    const response = await axios.get('http://localhost:8080/api/workout/userPreferences', {
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+    const response = await axios.get(PROD_API + 'api/workout/userPreferences', {
       params: { userEmail: email },
     });
     return response.data.workoutSchedule;
@@ -71,7 +72,8 @@ export const Calendar = React.memo(() => {
       // Fetch and add workout events
       if (availableDays.includes(dayOfWeek.toLowerCase())) {
         try {
-          const response = await axios.post('http://localhost:8080/api/workout/findWorkout', {
+          const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+          const response = await axios.post(PROD_API + 'api/workout/findWorkout', {
             userEmail: userEmail,
             date: formattedDate,
           });
@@ -105,7 +107,8 @@ export const Calendar = React.memo(() => {
 
       // Fetch and add meal events
       try {
-        const mealResponse = await axios.post('http://localhost:8080/api/food/findMeal', {
+        const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+        const mealResponse = await axios.post(PROD_API + 'api/food/findMeal', {
           userEmail: userEmail,
           date: formattedDate,
         });
@@ -190,7 +193,8 @@ export const Calendar = React.memo(() => {
   // Function to mark a meal as complete in the backend
   const setMealComplete = async (userEmail, date) => {
     try {
-      await axios.post('http://localhost:8080/api/food/setMealComplete', {
+      const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+      await axios.post(PROD_API + 'api/food/setMealComplete', {
         userEmail: userEmail,
         date: date,
       });
@@ -203,7 +207,8 @@ export const Calendar = React.memo(() => {
   // Function to mark a workout as complete in the backend
   const setWorkoutComplete = async (userEmail, date) => {
     try {
-      await axios.post('http://localhost:8080/api/workout/setWorkoutComplete', {
+      const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+      await axios.post(PROD_API + 'api/workout/setWorkoutComplete', {
         userEmail: userEmail,
         date: date,
       });
