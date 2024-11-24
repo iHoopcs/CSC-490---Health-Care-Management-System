@@ -19,6 +19,7 @@ const casual_lunches_terms = ['sandwich', 'burger', 'chicken'];
 const casual_dinners_terms = ['pasta', 'tacos', 'stir-fry'];
 const casual_snacks_terms = ['meal bar', 'cookies', 'popcorn'];
 
+
 async function findFoods(searchTerms, amount) {
   const foodSearch = {
     method: 'foods.search',
@@ -38,8 +39,9 @@ async function findFoods(searchTerms, amount) {
 
     const data = await response.json()
 
-    foods = getUnique(data.foods.food);
+    let foods = getUnique(data.foods.food);
     foods = getRandomElements(foods);
+    console.log(foods);
     return foods;
   }
   catch (error) {

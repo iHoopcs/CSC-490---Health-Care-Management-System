@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "*.js",
+      "src": "index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/",
+      "dest": "index.js",
       "methods": [
         "GET",
         "POST",
@@ -22,5 +22,10 @@
         "Access-Control-Allow-Origin": "*"
       }
     }
-  ]
+  ],
+  "env": {
+    "FS_ID": "6f054d1c08384eee990646d50244d12f",
+    "FS_SECRET": "61d84a3ce52045af8b147ac9d77c4501",
+    "FS_AUTH_KEY": "87b16de987dd4994b4614417a5642077"
+  }
 }
