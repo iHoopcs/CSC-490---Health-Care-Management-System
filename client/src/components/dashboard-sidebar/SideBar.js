@@ -58,7 +58,7 @@ export const SideBar = (props) => {
 
     try {
       const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
-      const response = await axios.get(PROD_API + 'api/workout/userPreferences',
+      const response = await axios.post(PROD_API + 'api/workout/userPreferences',
         { params: { userEmail: userEmail } });
 
       const plan = response.data.workoutPlan;
