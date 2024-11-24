@@ -5,9 +5,9 @@ const exerciseController = require('../controllers/exerciseController');
 const { formatDate, parseDate, getDaysFromDate, filterDateDays, removeDatesBefore } = require('../utility/dateUtils.js');
 
 
-const exerciseTypes =
-  ['cardio', 'strength', 'stretching', 'strongman', 'powerlifting',
-    'ploymetrics', 'olympic_weightlifting'];
+const buildMuscleExercises = ['strength', 'strongman', 'powerlifting']
+const casualExercises = ['cardio', 'stretching', 'strength'];
+const weightLossExercises = ['cardio', 'ploymetrics', 'plyometric'];
 
 const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -105,12 +105,28 @@ const generateWorkout = async (req, res) => {
   const userEmail = String(req.body.userEmail);
   const planPrefs = await WorkoutPrefs.findOne({ userEmail: userEmail });
 
+  // to make sure external api isnt callled to frequently.
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   try {
     let exerciseData = [];
+    let exerciseTypes = [];
+
+    if (planPrefs.workoutPlan == 'weight-loss') {
+      exerciseTypes = weightLossExercises;
+    }
+    else if (planPrefs.workoutPlan == 'casual') {
+      exerciseTypes = casualExercises;
+    }
+    else if (planPrefs.workoutPlan == 'build-muscle') {
+      exerciseTypes = buildMuscleExercises;
+
+    }
 
     for (let type of exerciseTypes) {
       let data = await exerciseController.fetchExercises(type, req, res);
       exerciseData = exerciseData.concat(data);
+      await delay(200);
     }
 
     if (Array.isArray(exerciseData)) {
