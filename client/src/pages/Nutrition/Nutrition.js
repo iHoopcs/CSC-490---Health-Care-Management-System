@@ -101,6 +101,9 @@ export const Nutrition = () => {
   };
 
   async function setFoodImage(name) {
+    console.log(name);
+
+
     try {
       const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
       const response = await axios.post(PROD_API + 'api/image/find',

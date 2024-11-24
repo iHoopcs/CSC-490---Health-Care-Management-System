@@ -16,6 +16,7 @@
     "bootstrap-table": "^1.23.4",
     "font-awesome": "^4.7.0",
     "jquery": "^3.7.1",
+    "node-fetch": "^3.3.2",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
