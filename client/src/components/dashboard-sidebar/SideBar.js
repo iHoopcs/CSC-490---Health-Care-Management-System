@@ -55,10 +55,11 @@ export const SideBar = (props) => {
   // find if the user has a plan for workout's and nutrition
   const userHasPlan = async () => {
     const userEmail = localStorage.getItem('userEmail');
+    console.log(userEmail);
 
     try {
       const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
-      const response = await axios.post(PROD_API + 'api/workout/userPreferences',
+      const response = await axios.get(PROD_API + 'api/workout/userPreferences',
         { params: { userEmail: userEmail } });
 
       const plan = response.data.workoutPlan;
