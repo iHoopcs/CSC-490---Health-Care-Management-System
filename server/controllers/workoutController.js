@@ -19,7 +19,7 @@ const updateWorkoutMonth = async (req, res) => {
 
     const currentRawDate = new Date();
     const currentDate = formatDate(currentRawDate);
-    let futureDates = getDaysFromDate(currentDate, 30);
+    let futureDates = getDaysFromDate(currentDate, 7);
     futureDates = filterDateDays(futureDates, planPrefs.workoutSchedule);
 
     for (let i = 0; i < futureDates.length; i++) {
