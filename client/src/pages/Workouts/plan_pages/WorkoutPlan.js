@@ -32,7 +32,8 @@ export const WorkoutPlan = () => {
 
   const checkAvalibleDays = async (email) => {
     try {
-      const response = await axios.get('http://localhost:8080/api/workout/userPreferences',
+      const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+      const response = await axios.get(PROD_API + 'api/workout/userPreferences',
         { params: { userEmail: email } });
 
       let days = response.data.workoutSchedule;
@@ -51,7 +52,8 @@ export const WorkoutPlan = () => {
   }
 
   const generatePlans = async (userEmail) => {
-    await axios.post('http://localhost:8080/api/workout/updatePlan', { userEmail });
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+    await axios.post(PROD_API + 'api/workout/updatePlan', { userEmail });
     let newPlans = [];
 
     const currentRawDate = new Date();
@@ -60,8 +62,8 @@ export const WorkoutPlan = () => {
 
     for (let i = 0; i < futureDates.length; i++) {
       try {
-
-        let workout = await axios.post('http://localhost:8080/api/workout/findWorkout',
+        const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+        let workout = await axios.post(PROD_API + 'api/workout/findWorkout',
           { userEmail: userEmail, date: futureDates[i] });
 
         if (workout != null) {
@@ -80,7 +82,8 @@ export const WorkoutPlan = () => {
   const regeneratePlans = async (userEmail) => {
     setLoading(true);
     setPlans([]);
-    await axios.post('http://localhost:8080/api/workout/deletePlans', { userEmail: userEmail });
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+    await axios.post(PROD_API + 'api/workout/deletePlans', { userEmail: userEmail });
     await generatePlans(userEmail);
   }
 

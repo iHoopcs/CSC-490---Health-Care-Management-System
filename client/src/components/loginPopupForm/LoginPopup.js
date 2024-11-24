@@ -27,7 +27,8 @@ function LoginPopup() {
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', loginData);
+      const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+      const response = await axios.post(PROD_API + 'api/auth/login', loginData);
       console.log('Login successful:', response.data);
       //redirect to platform page - with user welcome greeting
       localStorage.setItem('token', response.data.token)

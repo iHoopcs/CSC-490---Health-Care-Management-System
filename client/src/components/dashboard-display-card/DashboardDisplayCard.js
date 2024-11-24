@@ -30,7 +30,8 @@ export const DashboardCard = (props) => {
 
     const token = localStorage.getItem('token'); //fetch user jwt for validation
     const userEmail = localStorage.getItem('userEmail');
-    axios.get('http://localhost:8080/api/userData', {
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+    axios.get(PROD_API + 'api/userData', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'X-User-Email': userEmail,

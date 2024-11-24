@@ -40,7 +40,8 @@ export const Social = (props) => {
 
 
         try {
-            await axios.post('http://localhost:8080/api/create-post', newPost)
+            const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+            await axios.post(PROD_API + 'api/create-post', newPost)
                 .then((response) => {
                     console.log(response)
                 }).catch(err => console.log(err))
@@ -56,8 +57,9 @@ export const Social = (props) => {
     }
 
     const fetchPosts = async () => {
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
         try {
-            await axios.get('http://localhost:8080/api/posts')
+            await axios.get(PROD_API + 'api/posts')
                 .then((response) => {
                     console.log(response)
                     setPosts(response.data.posts)

@@ -51,7 +51,8 @@ export const Nutrition = () => {
 
   const getFoodItem = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/food/search',
+      const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+      const response = await axios.post(PROD_API + 'api/food/search',
         { searchTerms: "apple" });
 
       let food = response.data.foods.food;
@@ -101,7 +102,8 @@ export const Nutrition = () => {
 
   async function setFoodImage(name) {
     try {
-      const response = await axios.post('http://localhost:8080/api/image/find',
+      const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+      const response = await axios.post(PROD_API + 'api/image/find',
         { name: name });
 
       setFoodPicture(response.data[0]);
@@ -111,10 +113,10 @@ export const Nutrition = () => {
   }
 
   const getDaysPlan = async (date) => {
-    await axios.post('http://localhost:8080/api/food/updatePlan',
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+    await axios.post(PROD_API + 'api/food/updatePlan',
       { userEmail: userEmail });
-
-    const response = await axios.post('http://localhost:8080/api/food/findMeal',
+    const response = await axios.post(PROD_API + 'api/food/findMeal',
       { userEmail: userEmail, date: date });
 
     return response.data;
@@ -122,13 +124,14 @@ export const Nutrition = () => {
 
   const setMealComplete = async () => {
     const currentDate = new Date().toISOString().split('T')[0];
-
-    await axios.post('http://localhost:8080/api/food/setMealComplete',
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+    await axios.post(PROD_API + 'api/food/setMealComplete',
       { userEmail: userEmail, date: currentDate });
   }
 
   const getUserNutritionPlan = async () => {
-    const response = await axios.get('http://localhost:8080/api/workout/userPreferences',
+    const PROD_API = "https://csc490-nutrifit-server.vercel.app/";
+    const response = await axios.get(PROD_API + 'api/workout/userPreferences',
       { params: { userEmail: userEmail } });
 
     return response.data.workoutPlan;
